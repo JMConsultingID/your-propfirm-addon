@@ -16,7 +16,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         return;
     }
 
-    if ($old_status === 'on-hold' && $new_status === 'completed') {
+    if (($old_status === 'on-hold' || $old_status === 'pending') && $new_status === 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
         $user_email = $order->get_billing_email();
         $user_first_name = $order->get_billing_first_name();
