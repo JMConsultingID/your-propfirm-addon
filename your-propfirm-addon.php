@@ -14,11 +14,11 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Add On YourPropfirm User
- * Plugin URI:        https://windlu.com
+ * Plugin URI:        https://fundyourfx.com
  * Description:       This Plugin to Create User or Account to Dashboard YourPropfirm
  * Version:           1.0.0
  * Author:            Ardi JM Consulting
- * Author URI:        https://windlu.com
+ * Author URI:        https://fundyourfx.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       fyfx-propfirm-user
