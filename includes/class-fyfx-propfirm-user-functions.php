@@ -452,18 +452,18 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
             //wc_add_notice('User created successfully.' . $api_response, 'success');
         } elseif ($http_status == 400) {
             // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type A.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 400.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 409) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type B.';
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 409)
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 409.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 500) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type C.';
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 500)
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 500.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } else {
-        	$error_message = isset($api_response['message']) ? $api_response['message'] : 'An error occurred while creating the user. Error Type A.';
+        	$error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
             // Menampilkan pemberitahuan umum jika kode respons tidak dikenali
             //wc_add_notice($error_message .' '. $api_response, 'error');
         }
