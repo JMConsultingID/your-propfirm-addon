@@ -610,10 +610,10 @@ function your_propfirm_addon_add_program_id_field() {
     woocommerce_wp_text_input(
         array(
             'id'          => '_program_id',
-            'label'       => __('Program Id', 'woocommerce'),
-            'placeholder' => __('Enter Program Id value', 'woocommerce'),
+            'label'       => __('Program Id (Your Propfirm)', 'woocommerce'),
+            'placeholder' => __('Enter Program Id (Your Propfirm)', 'woocommerce'),
             'desc_tip'    => true,
-            'description' => __('Enter Program Id value here.', 'woocommerce'),
+            'description' => __('Enter Program Id (Your Propfirm).', 'woocommerce'),
             'wrapper_class' => 'show_if_simple',
         )
     );
