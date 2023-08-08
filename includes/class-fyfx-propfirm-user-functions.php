@@ -589,3 +589,30 @@ function add_api_response_js_to_sellkit_thankyou_page() {
 }
 add_action('woocommerce_before_customer_object_save', 'add_api_response_js_to_sellkit_thankyou_page');
 require plugin_dir_path( __FILE__ ) . 'class-fyfx-propfirm-user-functions-order-change.php';
+
+
+// Add a custom field to WooCommerce product
+function add_custom_field() {
+    global $product;
+
+    // Display the custom field on the product edit page
+    woocommerce_wp_text_input(
+        array(
+            'id'          => '_program_id',
+            'label'       => __('Program Id', 'woocommerce'),
+            'placeholder' => __('Enter Program Id value', 'woocommerce'),
+            'desc_tip'    => true,
+            'description' => __('Enter Program Id value here.', 'woocommerce'),
+            'wrapper_class' => 'show_if_simple'
+            'value'       => get_post_meta($product->get_id(), '_program_id', true),
+        )
+    );
+}
+add_action('woocommerce_product_options_general_product_data', 'add_custom_field');
+
+// Save the custom field value
+function save_custom_field($product_id) {
+    $program_id = sanitize_text_field($_POST['_program_id']);
+    update_post_meta($product_id, '_program_id', $program_id);
+}
+add_action('woocommerce_process_product_meta', 'save_custom_field');
