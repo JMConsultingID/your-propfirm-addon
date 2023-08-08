@@ -593,7 +593,10 @@ require plugin_dir_path( __FILE__ ) . 'class-fyfx-propfirm-user-functions-order-
 
 // Add a custom field to WooCommerce product
 function add_custom_field() {
-    global $product;
+    global $post;
+
+    // Get the product ID
+    $product_id = $post->ID;
 
     // Display the custom field on the product edit page
     woocommerce_wp_text_input(
