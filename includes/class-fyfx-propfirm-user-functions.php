@@ -593,7 +593,7 @@ require plugin_dir_path( __FILE__ ) . 'class-fyfx-propfirm-user-functions-order-
 
 // Add a custom field to WooCommerce product
 function add_custom_field() {
-    global $post;
+    global $woocommerce, $post;
 
     // Get the product ID
     $product_id = $post->ID;
@@ -616,6 +616,6 @@ add_action('woocommerce_product_options_general_product_data', 'add_custom_field
 // Save the custom field value
 function save_custom_field($product_id) {
     $program_id = sanitize_text_field($_POST['_program_id']);
-    update_post_meta($product_id, '_program_id', $program_id);
+    update_post_meta($product_id, '_program_id', esc_attr($program_id));
 }
 add_action('woocommerce_process_product_meta', 'save_custom_field');
