@@ -603,7 +603,7 @@ function add_custom_field() {
             'placeholder' => __('Enter Program Id value', 'woocommerce'),
             'desc_tip'    => true,
             'description' => __('Enter Program Id value here.', 'woocommerce'),
-            'wrapper_class' => 'show_if_simple'
+            'wrapper_class' => 'show_if_simple',
             'value'       => get_post_meta($product->get_id(), '_program_id', true),
         )
     );
