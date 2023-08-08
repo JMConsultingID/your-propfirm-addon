@@ -410,8 +410,16 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
         $items = $order->get_items();
         $program_id = '';
         foreach ($items as $item) {
-            $product = $item->get_product();
-            $program_id = $product->get_sku(); // Mendapatkan SKU produk
+            $product = $item->get_product();            
+            $get_program_id = get_post_meta($product->get_id(), '_program_id', true);
+            $sku_product = $product->get_sku();
+            if (!empty($get_program_id)) {
+                $program_id = $get_program_id;
+            } elseif (!empty($sku_product)) {
+                $program_id = $sku_product; // Mendapatkan SKU produk
+            } else{
+                $program_id = '000-000';
+            }
             break; // Hanya mengambil SKU produk dari item pertama
         }
 
@@ -618,27 +626,3 @@ function your_propfirm_addon_save_program_id_field($product_id) {
     update_post_meta($product_id, '_program_id', esc_attr($program_id));
 }
 add_action('woocommerce_process_product_meta', 'your_propfirm_addon_save_program_id_field');
-
-// Display custom field under price on product detail page
-function display_custom_field_under_price() {
-    global $woocommerce, $product, $post;
-
-    $program_id= get_post_meta($product->get_id(), '_program_id', true);
-    $sku_product = $product->get_sku();
-    $program_id_blank = '000';
-
-    if (!empty($program_id)) {
-        echo '<div class="custom-field-under-price">';
-        echo '<p><strong>' . __('Custom Field:', 'woocommerce') . '</strong> ' . esc_html($program_id) . '</p>';
-        echo '</div>';
-    } elseif (!empty($sku_product)) {
-        echo '<div class="custom-field-or-sku">';
-        echo '<p><strong>' . __('SKU:', 'woocommerce') . '</strong> ' . esc_html($sku) . '</p>';
-        echo '</div>';
-    } else{
-        echo '<div class="not-have-program-id">';
-        echo '<p><strong>' . __('SKU:', 'woocommerce') . '</strong> ' . esc_html($program_id_blank) . '</p>';
-        echo '</div>';
-    }
-}
-add_action('woocommerce_single_product_summary', 'display_custom_field_under_price', 15); // Adjust priority as needed
