@@ -624,15 +624,20 @@ function display_custom_field_under_price() {
     global $woocommerce, $product, $post;
 
     $program_id= get_post_meta($product->get_id(), '_program_id', true);
-    $sku = $product->get_sku();
+    $sku_product = $product->get_sku();
+    $program_id_blank = '000';
 
     if (!empty($program_id)) {
         echo '<div class="custom-field-under-price">';
         echo '<p><strong>' . __('Custom Field:', 'woocommerce') . '</strong> ' . esc_html($program_id) . '</p>';
         echo '</div>';
-    } else {
+    } elseif (!empty($sku_product)) {
         echo '<div class="custom-field-or-sku">';
         echo '<p><strong>' . __('SKU:', 'woocommerce') . '</strong> ' . esc_html($sku) . '</p>';
+        echo '</div>';
+    } else{
+        echo '<div class="not-have-program-id">';
+        echo '<p><strong>' . __('SKU:', 'woocommerce') . '</strong> ' . esc_html($program_id_blank) . '</p>';
         echo '</div>';
     }
 }
