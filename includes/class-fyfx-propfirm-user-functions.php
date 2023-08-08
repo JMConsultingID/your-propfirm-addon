@@ -420,7 +420,7 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
             $mt_version_value = $mt_version;
         }
         else{
-            $mt_version_value = 'MT4';
+            $mt_version_value = 'MT5';
         }
 
         $api_data = array(
@@ -618,3 +618,22 @@ function your_propfirm_addon_save_program_id_field($product_id) {
     update_post_meta($product_id, '_program_id', esc_attr($program_id));
 }
 add_action('woocommerce_process_product_meta', 'your_propfirm_addon_save_program_id_field');
+
+// Display custom field under price on product detail page
+function display_custom_field_under_price() {
+    global $woocommerce, $product, $post;
+
+    $program_id= get_post_meta($product->get_id(), '_program_id', true);
+    $sku = $product->get_sku();
+
+    if (!empty($program_id)) {
+        echo '<div class="custom-field-under-price">';
+        echo '<p><strong>' . __('Custom Field:', 'woocommerce') . '</strong> ' . esc_html($program_id) . '</p>';
+        echo '</div>';
+    } else {
+        echo '<div class="custom-field-or-sku">';
+        echo '<p><strong>' . __('SKU:', 'woocommerce') . '</strong> ' . esc_html($sku) . '</p>';
+        echo '</div>';
+    }
+}
+add_action('woocommerce_single_product_summary', 'display_custom_field_under_price', 15); // Adjust priority as needed
