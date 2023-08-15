@@ -43,7 +43,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             $mt_version_value = $mt_version;
         }
         else{
-            $mt_version_value = 'MT5';
+            $mt_version_value = 'MT4';
         }
 
         $api_data = array(
