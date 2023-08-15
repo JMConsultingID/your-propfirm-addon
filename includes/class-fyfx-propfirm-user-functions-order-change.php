@@ -33,8 +33,16 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $items = $order->get_items();
         $program_id = '';
         foreach ($items as $item) {
-            $product = $item->get_product();
-            $program_id = $product->get_sku(); // Mendapatkan SKU produk
+            $product = $item->get_product();            
+            $get_program_id = get_post_meta($product->get_id(), '_program_id', true);
+            $sku_product = $product->get_sku();
+            if (!empty($get_program_id)) {
+                $program_id = $get_program_id;
+            } elseif (!empty($sku_product)) {
+                $program_id = $sku_product; // Mendapatkan SKU produk
+            } else{
+                $program_id = '000-000';
+            }
             break; // Hanya mengambil SKU produk dari item pertama
         }
 
