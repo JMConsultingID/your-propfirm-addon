@@ -110,7 +110,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         }
 
         $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
-        $key_url = $endpoint_url . " - " .$api_key;
+        $key_url = "--";
 
         // Menyimpan respons API sebagai metadata pesanan
         update_post_meta($order_id, 'api_response',$api_response_test);
