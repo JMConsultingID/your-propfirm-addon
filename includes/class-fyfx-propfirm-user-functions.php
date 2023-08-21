@@ -231,14 +231,37 @@ function fyfx_your_propfirm_plugin_environment_callback() {
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="live" <?php checked($environment, 'live'); ?> />
         Live Version
     </label>
+
+    <script>
+        jQuery(document).ready(function($) {
+            // Initial check on page load
+            checkEnvironmentFields();
+
+            // Check when radio button changes
+            $('input[name="fyfx_your_propfirm_plugin_environment"]').change(function() {
+                checkEnvironmentFields();
+            });
+
+            function checkEnvironmentFields() {
+                var selectedValue = $('input[name="fyfx_your_propfirm_plugin_environment"]:checked').val();
+
+                if (selectedValue === 'sandbox') {
+                    $('.sandbox-fields').show();
+                    $('.live-fields').hide();
+                } else if (selectedValue === 'live') {
+                    $('.sandbox-fields').hide();
+                    $('.live-fields').show();
+                }
+            }
+        });
+        </script>
     <?php
-     echo '<input type="hidden" id="fyfx_your_propfirm_plugin_selected_environment" value="' . esc_attr($environment) . '" />';
 }
 
 // Render sandbox endpoint URL field
 function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
     $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
-    echo '<div id="fyfx_your_propfirm_plugin_sandbox_endpoint_url" class="fyfx_your_propfirm-plugin-field">';
+    echo '<div class="sandbox-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="' . $sandbox_endpoint_url . '" style="width: 400px;" />';
     echo '</div>';
 }
@@ -246,7 +269,7 @@ function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
 // Render sandbox test key field
 function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
     $sandbox_test_key = get_option('fyfx_your_propfirm_plugin_sandbox_test_key');
-    echo '<div id="fyfx_your_propfirm_plugin_sandbox_test_key" class="fyfx_your_propfirm-plugin-field">';
+    echo '<div class="sandbox-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="' . $sandbox_test_key. '" style="width: 400px;" />';
     echo '</div>';
 }
@@ -255,7 +278,7 @@ function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
 // Render endpoint URL field
 function fyfx_your_propfirm_plugin_endpoint_url_callback() {
     $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
-    echo '<div id="fyfx_your_propfirm_plugin_endpoint_url" class="fyfx_your_propfirm-plugin-field">';
+    echo '<div class="live-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_endpoint_url" value="' . $endpoint_url . '" style="width: 400px;" />';
     echo '</div>';
 }
@@ -263,7 +286,7 @@ function fyfx_your_propfirm_plugin_endpoint_url_callback() {
 // Render API Key field
 function fyfx_your_propfirm_plugin_api_key_callback() {
     $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
-    echo '<div id="fyfx_your_propfirm_plugin_api_key" class="fyfx_your_propfirm-plugin-field">';
+    echo '<div class="live-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_api_key" value="' . $api_key . '" style="width: 400px;" />';
     echo '</div>';
 }

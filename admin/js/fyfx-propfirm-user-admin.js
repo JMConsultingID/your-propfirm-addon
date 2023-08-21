@@ -29,28 +29,4 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-	// Initially show/hide fields based on selected environment
-    showHideFields();
-
-    // Detect changes in the selected environment radio button
-    $('input[name="fyfx_your_propfirm_plugin_environment"]').on('change', function() {
-        showHideFields();
-    });
-
-    function showHideFields() {
-        var selectedEnvironment = $('#fyfx_your_propfirm_plugin_selected_environment').val();
-
-        // Hide all fields
-        $('.woocommerce-create-user-plugin-field').hide();
-
-        // Show fields based on the selected environment
-        if (selectedEnvironment === 'sandbox') {
-            $('#fyfx_your_propfirm_plugin_sandbox_endpoint_url').show();
-            $('#fyfx_your_propfirm_plugin_sandbox_test_key').show();
-        } else if (selectedEnvironment === 'live') {
-            $('#fyfx_your_propfirm_plugin_endpoint_url').show();
-            $('#fyfx_your_propfirm_plugin_api_key').show();
-        }
-    }
-
 })( jQuery );
