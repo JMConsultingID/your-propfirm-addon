@@ -459,6 +459,23 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
         return;
     }
 
+    // Check the selected environment
+    $environment = get_option('woocommerce_create_user_plugin_environment');
+    if ($environment === 'sandbox') {
+        // Perform actions for Sandbox Environment
+        $endpoint_url = esc_attr(get_option('woocommerce_create_user_plugin_sandbox_endpoint_url'));
+        $api_key = esc_attr(get_option('woocommerce_create_user_plugin_sandbox_test_key'));
+    } else {
+        // Perform actions for Live Environment
+        $endpoint_url = esc_attr(get_option('woocommerce_create_user_plugin_endpoint_url'));
+        $api_key = esc_attr(get_option('woocommerce_create_user_plugin_api_key'));
+
+        // Check if endpoint URL and API Key are provided
+        if (empty($endpoint_url) || empty($api_key)) {
+            return;
+        }
+    }
+
 
     // Get the order object
     $order = wc_get_order($order_id);   
@@ -549,8 +566,11 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
 
         $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
 
+        $key_url = $endpoint_url . " - " .$api_key;
+
         // Menyimpan respons API sebagai metadata pesanan
         update_post_meta($order_id, 'api_response',$api_response_test);
+        update_post_meta($order_id, 'api_response_key',$key_url);
     }
 }
 
