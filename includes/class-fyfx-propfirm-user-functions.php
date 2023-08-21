@@ -267,6 +267,38 @@ function fyfx_your_propfirm_plugin_environment_callback() {
     </script>
     <?php
 }
+// Render sandbox endpoint URL field
+function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
+    $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
+    echo '<div class="sandbox-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="' . $sandbox_endpoint_url . '" style="width: 400px;" />';
+    echo '</div>';
+}
+
+// Render sandbox test key field
+function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
+    $sandbox_test_key = get_option('fyfx_your_propfirm_plugin_sandbox_test_key');
+    echo '<div class="sandbox-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="' . $sandbox_test_key. '" style="width: 400px;" />';
+    echo '</div>';
+}
+
+
+// Render endpoint URL field
+function fyfx_your_propfirm_plugin_endpoint_url_callback() {
+    $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
+    echo '<div class="live-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_endpoint_url" value="' . $endpoint_url . '" style="width: 400px;" />';
+    echo '</div>';
+}
+
+// Render API Key field
+function fyfx_your_propfirm_plugin_api_key_callback() {
+    $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
+    echo '<div class="live-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_api_key" value="' . $api_key . '" style="width: 400px;" />';
+    echo '</div>';
+}
 
 // Render checkout form field
 function fyfx_your_propfirm_plugin_checkout_form_callback() {
