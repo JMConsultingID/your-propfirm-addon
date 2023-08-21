@@ -203,11 +203,11 @@ function fyfx_your_propfirm_plugin_environment_callback() {
     ?>
     <label>
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="sandbox" <?php checked($environment, 'sandbox'); ?> />
-        Sandbox
+        Sandbox Version
     </label>
     <label>
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="live" <?php checked($environment, 'live'); ?> />
-        Live
+        Live Version
     </label>
     <?php
 }
@@ -215,17 +215,13 @@ function fyfx_your_propfirm_plugin_environment_callback() {
 // Render sandbox endpoint URL field
 function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
     $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
-    ?>
-    <input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="<?php echo esc_attr($sandbox_endpoint_url); ?>" />
-    <?php
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="' . $sandbox_endpoint_url . '" style="width: 400px;" />';
 }
 
 // Render sandbox test key field
 function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
     $sandbox_test_key = get_option('fyfx_your_propfirm_plugin_sandbox_test_key');
-    ?>
-    <input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="<?php echo esc_attr($sandbox_test_key); ?>" />
-    <?php
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="' . $sandbox_test_key. '" style="width: 400px;" />';
 }
 
 
