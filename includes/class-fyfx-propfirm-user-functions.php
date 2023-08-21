@@ -445,14 +445,7 @@ add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_afte
 // Create user via API when successful payment is made
 function fyfx_your_propfirm_plugin_create_user($order_id) {
 	// Retrieve endpoint URL and API Key from plugin settings
-    $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
-    $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
     $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');
-
-    // Check if endpoint URL and API Key are provided
-    if (empty($endpoint_url) || empty($api_key)) {
-        return;
-    }
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -469,11 +462,11 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
         // Perform actions for Live Environment
         $endpoint_url = esc_attr(get_option('woocommerce_create_user_plugin_endpoint_url'));
         $api_key = esc_attr(get_option('woocommerce_create_user_plugin_api_key'));
+    }
 
-        // Check if endpoint URL and API Key are provided
-        if (empty($endpoint_url) || empty($api_key)) {
-            return;
-        }
+    // Check if endpoint URL and API Key are provided
+    if (empty($endpoint_url) || empty($api_key)) {
+        return;
     }
 
 
