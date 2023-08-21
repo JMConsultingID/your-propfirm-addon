@@ -453,15 +453,15 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
     }
 
     // Check the selected environment
-    $environment = get_option('woocommerce_create_user_plugin_environment');
+    $environment = get_option('fyfx_your_propfirm_plugin_environment');
     if ($environment === 'sandbox') {
         // Perform actions for Sandbox Environment
-        $endpoint_url = esc_attr(get_option('woocommerce_create_user_plugin_sandbox_endpoint_url'));
-        $api_key = esc_attr(get_option('woocommerce_create_user_plugin_sandbox_test_key'));
+        $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url'));
+        $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_test_key'));
     } else {
         // Perform actions for Live Environment
-        $endpoint_url = esc_attr(get_option('woocommerce_create_user_plugin_endpoint_url'));
-        $api_key = esc_attr(get_option('woocommerce_create_user_plugin_api_key'));
+        $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
+        $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
     }
 
     // Check if endpoint URL and API Key are provided
