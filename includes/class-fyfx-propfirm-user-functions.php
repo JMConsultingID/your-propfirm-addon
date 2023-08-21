@@ -232,36 +232,13 @@ function fyfx_your_propfirm_plugin_environment_callback() {
         Live Version
     </label>
 
-    <script>
-        jQuery(document).ready(function($) {
-            // Initial check on page load
-            checkEnvironmentFields();
-
-            // Check when radio button changes
-            $('input[name="fyfx_your_propfirm_plugin_environment"]').change(function() {
-                checkEnvironmentFields();
-            });
-
-            function checkEnvironmentFields() {
-                var selectedValue = $('input[name="fyfx_your_propfirm_plugin_environment"]:checked').val();
-
-                if (selectedValue === 'sandbox') {
-                    $('.sandbox-fields').show();
-                    $('.live-fields').hide();
-                } else if (selectedValue === 'live') {
-                    $('.sandbox-fields').hide();
-                    $('.live-fields').show();
-                }
-            }
-        });
-        </script>
     <?php
 }
 
 // Render sandbox endpoint URL field
 function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
     $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
-    echo '<div class="sandbox-fields"  style="display: none;">';
+    echo '<div class="sandbox-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="' . $sandbox_endpoint_url . '" style="width: 400px;" />';
     echo '</div>';
 }
@@ -269,7 +246,7 @@ function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
 // Render sandbox test key field
 function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
     $sandbox_test_key = get_option('fyfx_your_propfirm_plugin_sandbox_test_key');
-    echo '<div class="sandbox-fields"  style="display: none;">';
+    echo '<div class="sandbox-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="' . $sandbox_test_key. '" style="width: 400px;" />';
     echo '</div>';
 }
