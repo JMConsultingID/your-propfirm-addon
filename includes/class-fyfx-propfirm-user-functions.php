@@ -219,12 +219,15 @@ function fyfx_your_propfirm_plugin_enabled_callback() {
 // Render environment field
 function fyfx_your_propfirm_plugin_environment_callback() {
     $environment = get_option('fyfx_your_propfirm_plugin_environment');
+    if (empty($environment)) {
+        $environment = 'sandbox'; // Set default value to 'sandbox'
+    }
     ?>
-    <label>
+    <label width="100px">
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="sandbox" <?php checked($environment, 'sandbox'); ?> />
         Sandbox Version
     </label>
-    <label>
+    <label width="100px">
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="live" <?php checked($environment, 'live'); ?> />
         Live Version
     </label>
