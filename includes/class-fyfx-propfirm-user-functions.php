@@ -135,6 +135,25 @@ function fyfx_your_propfirm_plugin_settings_fields() {
 
     register_setting(
         'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_environment',
+        array(
+            'sanitize_callback' => 'sanitize_text_field'
+        )
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_sandbox_endpoint_url'
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_sandbox_test_key'
+    );
+
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
         'fyfx_your_propfirm_plugin_endpoint_url'
     );
 
