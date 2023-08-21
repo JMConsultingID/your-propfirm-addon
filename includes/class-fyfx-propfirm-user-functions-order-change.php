@@ -16,7 +16,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         return;
     }
 
-    if (($old_status === 'on-hold' || $old_status === 'pending') && $new_status === 'completed') {
+    if (($old_status === 'on-hold' || $old_status === 'pending' || $old_status === 'failed' || $old_status === 'cancelled' || $old_status === 'processing' ) && $new_status === 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
         $user_email = $order->get_billing_email();
         $user_first_name = $order->get_billing_first_name();
@@ -33,8 +33,16 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $items = $order->get_items();
         $program_id = '';
         foreach ($items as $item) {
-            $product = $item->get_product();
-            $program_id = $product->get_sku(); // Mendapatkan SKU produk
+            $product = $item->get_product();            
+            $get_program_id = get_post_meta($product->get_id(), '_program_id', true);
+            $sku_product = $product->get_sku();
+            if (!empty($get_program_id)) {
+                $program_id = $get_program_id;
+            } elseif (!empty($sku_product)) {
+                $program_id = $sku_product; // Mendapatkan SKU produk
+            } else{
+                $program_id = '000-000';
+            }
             break; // Hanya mengambil SKU produk dari item pertama
         }
 
@@ -75,18 +83,18 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             //wc_add_notice('User created successfully.' . $api_response, 'success');
         } elseif ($http_status == 400) {
             // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type A.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 400.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 409) {
             // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type B.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 409.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 500) {
             // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type C.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 500.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } else {
-            $error_message = isset($api_response['message']) ? $api_response['message'] : 'An error occurred while creating the user. Error Type A.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
             // Menampilkan pemberitahuan umum jika kode respons tidak dikenali
             //wc_add_notice($error_message .' '. $api_response, 'error');
         }

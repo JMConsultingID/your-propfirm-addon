@@ -410,16 +410,8 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
         $items = $order->get_items();
         $program_id = '';
         foreach ($items as $item) {
-            $product = $item->get_product();            
-            $get_program_id = get_post_meta($product->get_id(), '_program_id', true);
-            $sku_product = $product->get_sku();
-            if (!empty($get_program_id)) {
-                $program_id = $get_program_id;
-            } elseif (!empty($sku_product)) {
-                $program_id = $sku_product; // Mendapatkan SKU produk
-            } else{
-                $program_id = '000-000';
-            }
+            $product = $item->get_product();
+            $program_id = $product->get_sku(); // Mendapatkan SKU produk
             break; // Hanya mengambil SKU produk dari item pertama
         }
 
@@ -428,7 +420,7 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
             $mt_version_value = $mt_version;
         }
         else{
-            $mt_version_value = 'MT4';
+            $mt_version_value = 'MT5';
         }
 
         $api_data = array(
@@ -460,18 +452,18 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
             //wc_add_notice('User created successfully.' . $api_response, 'success');
         } elseif ($http_status == 400) {
             // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 400.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Code 400.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 409) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 409)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 409.';
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Code 409.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 500) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 500)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 500.';
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Code 500.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } else {
-        	$error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
+        	$error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Code Unknown.';
             // Menampilkan pemberitahuan umum jika kode respons tidak dikenali
             //wc_add_notice($error_message .' '. $api_response, 'error');
         }
@@ -597,32 +589,3 @@ function add_api_response_js_to_sellkit_thankyou_page() {
 }
 add_action('woocommerce_before_customer_object_save', 'add_api_response_js_to_sellkit_thankyou_page');
 require plugin_dir_path( __FILE__ ) . 'class-fyfx-propfirm-user-functions-order-change.php';
-
-
-// Add a custom field to WooCommerce product
-function your_propfirm_addon_add_program_id_field() {
-    global $woocommerce, $post;
-
-    // Get the product ID
-    $product_id = $post->ID;
-
-    // Display the custom field on the product edit page
-    woocommerce_wp_text_input(
-        array(
-            'id'          => '_program_id',
-            'label'       => __('Program Id (Your Propfirm)', 'woocommerce'),
-            'placeholder' => __('Enter Program Id (Your Propfirm)', 'woocommerce'),
-            'desc_tip'    => true,
-            'description' => __('Enter Program Id (Your Propfirm).', 'woocommerce'),
-            'wrapper_class' => 'show_if_simple',
-        )
-    );
-}
-add_action('woocommerce_product_options_general_product_data', 'your_propfirm_addon_add_program_id_field', 9);
-
-// Save the custom field value
-function your_propfirm_addon_save_program_id_field($product_id) {
-    $program_id = sanitize_text_field($_POST['_program_id']);
-    update_post_meta($product_id, '_program_id', esc_attr($program_id));
-}
-add_action('woocommerce_process_product_meta', 'your_propfirm_addon_save_program_id_field');
