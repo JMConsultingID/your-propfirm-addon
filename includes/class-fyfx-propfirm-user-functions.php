@@ -232,22 +232,22 @@ function fyfx_your_propfirm_plugin_environment_callback() {
     <div id="sandbox-fields" <?php if ($environment !== 'sandbox') echo 'style="display: none;"'; ?>>
         <p>
             <label for="fyfx_your_propfirm_plugin_sandbox_endpoint_url">Sandbox Endpoint URL:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url')); ?>" />
+            <input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url')); ?>" style="width: 400px;"/>
         </p>
         <p>
             <label for="fyfx_your_propfirm_plugin_sandbox_test_key">Sandbox Test Key:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_test_key')); ?>" />
+            <input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_test_key')); ?>" style="width: 400px;" />
         </p>
     </div>
 
     <div id="live-fields" <?php if ($environment !== 'live') echo 'style="display: none;"'; ?>>
         <p>
             <label for="fyfx_your_propfirm_plugin_endpoint_url">Endpoint URL:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_endpoint_url" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url')); ?>" />
+            <input type="text" name="fyfx_your_propfirm_plugin_endpoint_url" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url')); ?>" style="width: 400px;" />
         </p>
         <p>
             <label for="fyfx_your_propfirm_plugin_api_key">Plugin API Key:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_api_key" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_api_key')); ?>" />
+            <input type="text" name="fyfx_your_propfirm_plugin_api_key" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_api_key')); ?>" style="width: 400px;" />
         </p>
     </div>
 
