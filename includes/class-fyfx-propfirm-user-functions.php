@@ -261,7 +261,7 @@ function fyfx_your_propfirm_plugin_environment_callback() {
 // Render sandbox endpoint URL field
 function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
     $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
-    echo '<div class="sandbox-fields">';
+    echo '<div class="sandbox-fields"  style="display: none;">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="' . $sandbox_endpoint_url . '" style="width: 400px;" />';
     echo '</div>';
 }
@@ -269,7 +269,7 @@ function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
 // Render sandbox test key field
 function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
     $sandbox_test_key = get_option('fyfx_your_propfirm_plugin_sandbox_test_key');
-    echo '<div class="sandbox-fields">';
+    echo '<div class="sandbox-fields"  style="display: none;">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="' . $sandbox_test_key. '" style="width: 400px;" />';
     echo '</div>';
 }
