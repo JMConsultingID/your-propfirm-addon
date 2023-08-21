@@ -219,54 +219,22 @@ function fyfx_your_propfirm_plugin_enabled_callback() {
 // Render environment field
 function fyfx_your_propfirm_plugin_environment_callback() {
     $environment = get_option('fyfx_your_propfirm_plugin_environment');
+    if (empty($environment)) {
+        $environment = 'sandbox'; // Set default value to 'sandbox'
+    }
     ?>
-    <label>
+    <label width="100px">
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="sandbox" <?php checked($environment, 'sandbox'); ?> />
-        Sandbox
+        Sandbox Version
     </label>
-    <label>
+    <label width="100px">
         <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="live" <?php checked($environment, 'live'); ?> />
-        Live
+        Live Version
     </label>
 
-    <div id="sandbox-fields" <?php if ($environment !== 'sandbox') echo 'style="display: none;"'; ?>>
-        <p>
-            <label for="fyfx_your_propfirm_plugin_sandbox_endpoint_url">Sandbox Endpoint URL:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url')); ?>" style="width: 400px;"/>
-        </p>
-        <p>
-            <label for="fyfx_your_propfirm_plugin_sandbox_test_key">Sandbox Test Key:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_test_key')); ?>" style="width: 400px;" />
-        </p>
-    </div>
-
-    <div id="live-fields" <?php if ($environment !== 'live') echo 'style="display: none;"'; ?>>
-        <p>
-            <label for="fyfx_your_propfirm_plugin_endpoint_url">Endpoint URL:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_endpoint_url" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url')); ?>" style="width: 400px;" />
-        </p>
-        <p>
-            <label for="fyfx_your_propfirm_plugin_api_key">Plugin API Key:</label>
-            <input type="text" name="fyfx_your_propfirm_plugin_api_key" value="<?php echo esc_attr(get_option('fyfx_your_propfirm_plugin_api_key')); ?>" style="width: 400px;" />
-        </p>
-    </div>
-
-    <script>
-        jQuery(document).ready(function($) {
-            $('input[name="fyfx_your_propfirm_plugin_environment"]').change(function() {
-                var selectedValue = $(this).val();
-                if (selectedValue === 'sandbox') {
-                    $('#sandbox-fields').show();
-                    $('#live-fields').hide();
-                } else if (selectedValue === 'live') {
-                    $('#sandbox-fields').hide();
-                    $('#live-fields').show();
-                }
-            });
-        });
-    </script>
     <?php
 }
+
 // Render sandbox endpoint URL field
 function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
     $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
