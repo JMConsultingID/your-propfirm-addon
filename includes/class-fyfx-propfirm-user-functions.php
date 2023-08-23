@@ -455,8 +455,8 @@ add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_afte
 
 
 // Create user via API when successful payment is made
-function fyfx_your_propfirm_plugin_create_user($order_id) {
-	// Retrieve endpoint URL and API Key from plugin settings
+function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
+    // Retrieve endpoint URL and API Key from plugin settings
     $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
@@ -481,12 +481,7 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
         return;
     }
 
-
-    // Get the order object
-    $order = wc_get_order($order_id);   
-
-    if ($order->is_paid()) {
-        $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
+    if ($new_status == 'completed' && $old_status != 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
         $user_email = $order->get_billing_email();
         $user_first_name = $order->get_billing_first_name();
@@ -556,30 +551,28 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
             $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 400.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 409) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 409)
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
             $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 409.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 500) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 500)
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
             $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 500.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } else {
-        	$error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
             // Menampilkan pemberitahuan umum jika kode respons tidak dikenali
             //wc_add_notice($error_message .' '. $api_response, 'error');
         }
 
         $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
-
         $key_url = $endpoint_url . " - " .$api_key;
-
+        
         // Menyimpan respons API sebagai metadata pesanan
         update_post_meta($order_id, 'api_response',$api_response_test);
         update_post_meta($order_id, 'api_response_key',$key_url);
     }
 }
-
-add_action('woocommerce_payment_complete', 'fyfx_your_propfirm_plugin_create_user');
+add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
 
 // Send API request using CURL
 function fyfx_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
@@ -692,8 +685,6 @@ function add_api_response_js_to_sellkit_thankyou_page() {
     }    
 }
 add_action('woocommerce_before_customer_object_save', 'add_api_response_js_to_sellkit_thankyou_page');
-require plugin_dir_path( __FILE__ ) . 'class-fyfx-propfirm-user-functions-order-change.php';
-
 
 // Add a custom field to WooCommerce product
 function your_propfirm_addon_add_program_id_field() {
