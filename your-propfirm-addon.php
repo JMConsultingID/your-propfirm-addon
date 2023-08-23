@@ -11,7 +11,8 @@
  * @link              https://fundyourfx.com
  * @since             1.0.0
  * @package           Fyfx_Propfirm_User
- *
+ * GitHub Plugin URI: https://github.com/JMConsultingID/your-propfirm-addon
+ * GitHub Branch: develop
  * @wordpress-plugin
  * Plugin Name:       Add On YourPropfirm User
  * Plugin URI:        https://fundyourfx.com
@@ -102,6 +103,10 @@ function filter_action_fyfx_propfirm_links( $links ) {
      return $links;
 }
 add_filter( 'plugin_action_links_your-propfirm-addon/your-propfirm-addon.php', 'filter_action_fyfx_propfirm_links', 10, 1 );
+
+if ( function_exists('acf_add_local_field_group') ) {
+    add_filter( 'acf/settings/remove_wp_meta_box', '__return_false' );
+}
 
 /**
  * Begins execution of the plugin.

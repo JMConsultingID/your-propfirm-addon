@@ -46,8 +46,32 @@ function fyfx_your_propfirm_plugin_settings_fields() {
     );
 
     add_settings_field(
+        'fyfx_your_propfirm_plugin_environment',
+        'Environment',
+        'fyfx_your_propfirm_plugin_environment_callback',
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_general'
+    );
+
+    add_settings_field(
+        'fyfx_your_propfirm_plugin_sandbox_endpoint_url',
+        'Sandbox Endpoint URL',
+        'fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback',
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_general'
+    );
+
+    add_settings_field(
+        'fyfx_your_propfirm_plugin_sandbox_test_key',
+        'Sandbox Test Key',
+        'fyfx_your_propfirm_plugin_sandbox_test_key_callback',
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_general'
+    );
+
+    add_settings_field(
         'fyfx_your_propfirm_plugin_endpoint_url',
-        'Endpoint URL',
+        'Live Endpoint URL',
         'fyfx_your_propfirm_plugin_endpoint_url_callback',
         'fyfx_your_propfirm_plugin_settings',
         'fyfx_your_propfirm_plugin_general'
@@ -55,7 +79,7 @@ function fyfx_your_propfirm_plugin_settings_fields() {
 
     add_settings_field(
         'fyfx_your_propfirm_plugin_api_key',
-        'API Key',
+        'Live API Key',
         'fyfx_your_propfirm_plugin_api_key_callback',
         'fyfx_your_propfirm_plugin_settings',
         'fyfx_your_propfirm_plugin_general'
@@ -108,6 +132,25 @@ function fyfx_your_propfirm_plugin_settings_fields() {
             'sanitize_callback' => 'sanitize_text_field'
         )
     );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_environment',
+        array(
+            'sanitize_callback' => 'sanitize_text_field'
+        )
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_sandbox_endpoint_url'
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_sandbox_test_key'
+    );
+
 
     register_setting(
         'fyfx_your_propfirm_plugin_settings',
@@ -173,16 +216,56 @@ function fyfx_your_propfirm_plugin_enabled_callback() {
     <?php
 }
 
+// Render environment field
+function fyfx_your_propfirm_plugin_environment_callback() {
+    $environment = get_option('fyfx_your_propfirm_plugin_environment');
+    if (empty($environment)) {
+        $environment = 'sandbox'; // Set default value to 'sandbox'
+    }
+    ?>
+    <label width="100px">
+        <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="sandbox" <?php checked($environment, 'sandbox'); ?> />
+        Sandbox Version
+    </label>
+    <label width="100px">
+        <input type="radio" name="fyfx_your_propfirm_plugin_environment" value="live" <?php checked($environment, 'live'); ?> />
+        Live Version
+    </label>
+
+    <?php
+}
+
+// Render sandbox endpoint URL field
+function fyfx_your_propfirm_plugin_sandbox_endpoint_url_callback() {
+    $sandbox_endpoint_url = get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url');
+    echo '<div class="sandbox-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_endpoint_url" value="' . $sandbox_endpoint_url . '" style="width: 400px;" />';
+    echo '</div>';
+}
+
+// Render sandbox test key field
+function fyfx_your_propfirm_plugin_sandbox_test_key_callback() {
+    $sandbox_test_key = get_option('fyfx_your_propfirm_plugin_sandbox_test_key');
+    echo '<div class="sandbox-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_sandbox_test_key" value="' . $sandbox_test_key. '" style="width: 400px;" />';
+    echo '</div>';
+}
+
+
 // Render endpoint URL field
 function fyfx_your_propfirm_plugin_endpoint_url_callback() {
     $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
+    echo '<div class="live-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_endpoint_url" value="' . $endpoint_url . '" style="width: 400px;" />';
+    echo '</div>';
 }
 
 // Render API Key field
 function fyfx_your_propfirm_plugin_api_key_callback() {
     $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
+    echo '<div class="live-fields">';
     echo '<input type="text" name="fyfx_your_propfirm_plugin_api_key" value="' . $api_key . '" style="width: 400px;" />';
+    echo '</div>';
 }
 
 // Render checkout form field
@@ -372,28 +455,33 @@ add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_afte
 
 
 // Create user via API when successful payment is made
-function fyfx_your_propfirm_plugin_create_user($order_id) {
-	// Retrieve endpoint URL and API Key from plugin settings
-    $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
-    $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
+function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
+    // Retrieve endpoint URL and API Key from plugin settings
     $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');
-
-    // Check if endpoint URL and API Key are provided
-    if (empty($endpoint_url) || empty($api_key)) {
-        return;
-    }
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
         return;
     }
 
+    // Check the selected environment
+    $environment = get_option('fyfx_your_propfirm_plugin_environment');
+    if ($environment === 'sandbox') {
+        // Perform actions for Sandbox Environment
+        $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_endpoint_url'));
+        $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_sandbox_test_key'));
+    } else {
+        // Perform actions for Live Environment
+        $endpoint_url = esc_attr(get_option('fyfx_your_propfirm_plugin_endpoint_url'));
+        $api_key = esc_attr(get_option('fyfx_your_propfirm_plugin_api_key'));
+    }
 
-    // Get the order object
-    $order = wc_get_order($order_id);   
+    // Check if endpoint URL and API Key are provided
+    if (empty($endpoint_url) || empty($api_key)) {
+        return;
+    }
 
-    if ($order->is_paid()) {
-        $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
+    if ($new_status == 'completed' && $old_status != 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
         $user_email = $order->get_billing_email();
         $user_first_name = $order->get_billing_first_name();
@@ -463,27 +551,28 @@ function fyfx_your_propfirm_plugin_create_user($order_id) {
             $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 400.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 409) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 409)
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
             $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 409.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } elseif ($http_status == 500) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 500)
+            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
             $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 500.';
             //wc_add_notice($error_message .' '. $api_response, 'error');
         } else {
-        	$error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
+            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
             // Menampilkan pemberitahuan umum jika kode respons tidak dikenali
             //wc_add_notice($error_message .' '. $api_response, 'error');
         }
 
         $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
-
+        $key_url = $endpoint_url . " - " .$api_key;
+        
         // Menyimpan respons API sebagai metadata pesanan
         update_post_meta($order_id, 'api_response',$api_response_test);
+        update_post_meta($order_id, 'api_response_key',$key_url);
     }
 }
-
-add_action('woocommerce_payment_complete', 'fyfx_your_propfirm_plugin_create_user');
+add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
 
 // Send API request using CURL
 function fyfx_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
@@ -596,8 +685,6 @@ function add_api_response_js_to_sellkit_thankyou_page() {
     }    
 }
 add_action('woocommerce_before_customer_object_save', 'add_api_response_js_to_sellkit_thankyou_page');
-require plugin_dir_path( __FILE__ ) . 'class-fyfx-propfirm-user-functions-order-change.php';
-
 
 // Add a custom field to WooCommerce product
 function your_propfirm_addon_add_program_id_field() {
