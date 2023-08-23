@@ -11,7 +11,8 @@
  * @link              https://fundyourfx.com
  * @since             1.0.0
  * @package           Fyfx_Propfirm_User
- *
+ * GitHub Plugin URI: https://github.com/JMConsultingID/your-propfirm-addon
+ * GitHub Branch: develop
  * @wordpress-plugin
  * Plugin Name:       Add On YourPropfirm User
  * Plugin URI:        https://fundyourfx.com
