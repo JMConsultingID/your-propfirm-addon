@@ -570,6 +570,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         // Menyimpan respons API sebagai metadata pesanan
         update_post_meta($order_id, 'api_response',$api_response_test);
         update_post_meta($order_id, 'api_response_key',$key_url);
+        update_post_meta($order_id, 'api_program_id',$get_program_id);
     }
 }
 add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
