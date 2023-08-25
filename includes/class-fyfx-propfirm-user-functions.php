@@ -657,7 +657,7 @@ function fyfx_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $a
     $response = wp_remote_post(
         $api_url,
         array(
-            'timeout' => 20,
+            'timeout' => 30,
             'redirection' => 5,
             'headers' => $headers,            
             'body' => json_encode($api_data)
