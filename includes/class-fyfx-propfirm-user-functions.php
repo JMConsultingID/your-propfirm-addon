@@ -318,7 +318,7 @@ function fyfx_your_propfirm_plugin_default_mt_version_field_callback() {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
     ?>
     <select name="fyfx_your_propfirm_plugin_default_mt_version_field">
-        <option value="MT4" <?php selected($default_mt 'MT4'); ?>>MT4 Version</option>
+        <option value="MT4" <?php selected($default_mt, 'MT4'); ?>>MT4 Version</option>
         <option value="MT5" <?php selected($default_mt, 'MT5'); ?>>MT5 Version</option>
     </select>
     <?php
