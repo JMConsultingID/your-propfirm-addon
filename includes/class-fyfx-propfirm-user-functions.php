@@ -313,7 +313,7 @@ function fyfx_your_propfirm_plugin_sellkit_option_callback() {
     }
 }
 
-// Render checkout form field
+// Render Default MT Version form field
 function fyfx_your_propfirm_plugin_default_mt_version_field_callback() {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
     ?>
@@ -657,7 +657,9 @@ function fyfx_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $a
     $response = wp_remote_post(
         $api_url,
         array(
-            'headers' => $headers,
+            'timeout' => 20,
+            'redirection' => 5,
+            'headers' => $headers,            
             'body' => json_encode($api_data)
         )
     );
