@@ -486,6 +486,7 @@ add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_afte
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
     // Retrieve endpoint URL and API Key from plugin settings
     $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -544,7 +545,12 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             $mt_version_value = $mt_version;
         }
         else{
-            $mt_version_value = 'MT4';
+            if (!empty($default_mt)){
+                $mt_version_value = $default_mt;
+            }
+            else{
+                $mt_version_value = 'MT4';
+            }
         }
 
         $api_data = array(
