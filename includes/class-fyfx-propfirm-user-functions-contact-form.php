@@ -90,9 +90,9 @@ function fyfx_your_propfirm_plugin_select_form_field_callback() {
     $select_form = get_option('fyfx_your_propfirm_plugin_select_form_field');
     ?>
     <select name="fyfx_your_propfirm_plugin_select_form_field">
-        <option value="wp-form-7" <?php selected($default_mt, 'wp-form-7'); ?>>Contact Form 7</option>
-        <option value="wp-forms" <?php selected($default_mt, 'wp-form'); ?>>WPForms</option>
-        <option value="divi-form" <?php selected($default_mt, 'divi-form'); ?>>Divi Form</option>
+        <option value="wp-form-7" <?php selected($select_form, 'wp-form-7'); ?>>Contact Form 7</option>
+        <option value="wp-forms" <?php selected($select_form, 'wp-form'); ?>>WPForms</option>
+        <option value="divi-form" <?php selected($select_form, 'divi-form'); ?>>Divi Form</option>
     </select>
     <?php
 }
