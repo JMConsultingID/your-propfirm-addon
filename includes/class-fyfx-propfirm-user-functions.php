@@ -6,7 +6,7 @@ function fyfx_your_propfirm_plugin_settings_page() {
         'YPF Plugin',                // Judul pada menu utama
         'manage_options',            // Capability yang dibutuhkan untuk mengakses menu
         'ypf_plugin',                // Slug menu utama
-        'ypf_plugin_settings_page_content', // Callback function untuk halaman konten
+        'fyfx_your_propfirm_plugin_settings_page_content', // Callback function untuk halaman konten
         'dashicons-buddicons-replies',    // Ikona menu (Anda dapat mengganti dengan ikon lain)
         45                           // Urutan di dalam menu
     );
@@ -16,7 +16,7 @@ function fyfx_your_propfirm_plugin_settings_page() {
         'YPF Woocommerce',      // Judul submenu
         'YPF Woocommerce',      // Judul submenu
         'manage_options',            // Capability yang dibutuhkan untuk mengakses submenu
-        'fyfx_your_propfirm_plugin', // Slug submenu
+        'ypf_plugin', // Slug submenu
         'fyfx_your_propfirm_plugin_settings_page_content' // Callback function untuk halaman konten submenu
     );
 
