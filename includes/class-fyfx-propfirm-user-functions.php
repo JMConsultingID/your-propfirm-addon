@@ -257,7 +257,7 @@ function get_divi_contact_forms() {
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
-            $forms[get_the_ID()] = get_the_ID();
+            $forms[] = get_the_ID();
         }
         wp_reset_postdata();
     } else {
