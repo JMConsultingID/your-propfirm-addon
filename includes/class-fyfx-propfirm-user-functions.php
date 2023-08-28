@@ -3,21 +3,12 @@
 function fyfx_your_propfirm_plugin_settings_page() {
     add_menu_page(
         'YPF Plugin',                // Judul pada menu utama
-        'YPF Plugin',                // Judul pada menu utama
+        'YPF Woocommerce',                // Judul pada menu utama
         'manage_options',            // Capability yang dibutuhkan untuk mengakses menu
-        'ypf_plugin',                // Slug menu utama
-        'ypf_plugin_settings_page_content', // Callback function untuk halaman konten
+        'fyfx_your_propfirm_plugin',                // Slug menu utama
+        'fyfx_your_propfirm_plugin_settings_page_content', // Callback function untuk halaman konten
         'dashicons-buddicons-replies',    // Ikona menu (Anda dapat mengganti dengan ikon lain)
         45                           // Urutan di dalam menu
-    );
-
-    add_submenu_page(
-        'ypf_plugin',    // Slug menu utama ('jm_autocomplete_plugin' dari menu utama di atas)
-        'Add On Your Propfirm',      // Judul submenu
-        'Add On Your Propfirm',      // Judul submenu
-        'manage_options',            // Capability yang dibutuhkan untuk mengakses submenu
-        'fyfx_your_propfirm_plugin', // Slug submenu
-        'fyfx_your_propfirm_plugin_settings_page_content' // Callback function untuk halaman konten submenu
     );
 
     add_submenu_page(
