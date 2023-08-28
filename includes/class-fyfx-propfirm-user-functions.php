@@ -2,8 +2,8 @@
 // Add plugin settings page
 function fyfx_your_propfirm_plugin_settings_page() {
     add_menu_page(
-        'YPF z',                // Judul pada menu utama
         'YPF Plugin',                // Judul pada menu utama
+        '',                // Judul pada menu utama
         'manage_options',            // Capability yang dibutuhkan untuk mengakses menu
         'ypf_plugin',                // Slug menu utama
         'ypf_plugin_settings_page_content', // Callback function untuk halaman konten
@@ -14,7 +14,7 @@ function fyfx_your_propfirm_plugin_settings_page() {
     add_submenu_page(
         'ypf_plugin',    // Slug menu utama ('jm_autocomplete_plugin' dari menu utama di atas)
         'YPF Woocommerce',      // Judul submenu
-        'YPF Contact Form',      // Judul submenu
+        'YPF Woocommerce',      // Judul submenu
         'manage_options',            // Capability yang dibutuhkan untuk mengakses submenu
         'fyfx_your_propfirm_plugin', // Slug submenu
         'fyfx_your_propfirm_plugin_settings_page_content' // Callback function untuk halaman konten submenu
