@@ -1,5 +1,5 @@
 <?php
-// Add plugin settings fields
+// Add plugin settings Contact Form fields
 function fyfx_your_propfirm_plugin_contact_form_settings_fields() {
     add_settings_section(
         'fyfx_your_propfirm_plugin_contact_form_general',
@@ -17,9 +17,17 @@ function fyfx_your_propfirm_plugin_contact_form_settings_fields() {
     );
 
     add_settings_field(
-        'fyfx_your_propfirm_plugin_form_divi_field',
+        'fyfx_your_propfirm_plugin_select_form_field',
+        'Select Form Provider',
+        'fyfx_your_propfirm_plugin_select_form_field_callback',
+        'fyfx_your_propfirm_plugin_contact_form_settings',
+        'fyfx_your_propfirm_plugin_contact_form_general'
+    );
+
+    add_settings_field(
+        'fyfx_your_propfirm_plugin_form_pages_field',
         'Select Page Contact Form',
-        'fyfx_your_propfirm_plugin_form_divi_field_callback',
+        'fyfx_your_propfirm_plugin_form_pages_field_callback',
         'fyfx_your_propfirm_plugin_contact_form_settings',
         'fyfx_your_propfirm_plugin_contact_form_general'
     );
@@ -34,7 +42,7 @@ function fyfx_your_propfirm_plugin_contact_form_settings_fields() {
 
     register_setting(
         'fyfx_your_propfirm_plugin_contact_form_settings',
-        'fyfx_your_propfirm_plugin_form_divi_field',
+        'fyfx_your_propfirm_plugin_form_pages_field',
         array(
             'sanitize_callback' => 'sanitize_text_field'
         )
@@ -61,12 +69,12 @@ function get_divi_contact_forms() {
     return $forms;
 }
 
-// Render general settings section callback
+// Render Contact Form section callback
 function fyfx_your_propfirm_plugin_contact_form_section_callback() {
     echo 'Configure the Contact Form settings for YPF Plugin.';
 }
 
-// Render enable plugin field
+// Render enable plugin Contact Form field
 function fyfx_your_propfirm_plugin_contact_form_enabled_callback() {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_contact_form_enabled');
     ?>
@@ -77,12 +85,25 @@ function fyfx_your_propfirm_plugin_contact_form_enabled_callback() {
     <?php
 }
 
-function fyfx_your_propfirm_plugin_form_divi_field_callback() {
-    $options = get_option('fyfx_your_propfirm_plugin_form_divi_field');
-    $selected_form_divi = isset($options['fyfx_your_propfirm_plugin_form_divi_field']) ? sanitize_text_field($options['fyfx_your_propfirm_plugin_form_divi_field']) : '';
+// Render Select form field
+function fyfx_your_propfirm_plugin_select_form_field_callback() {
+    $select_form = get_option('fyfx_your_propfirm_plugin_select_form_field');
+    ?>
+    <select name="fyfx_your_propfirm_plugin_select_form_field">
+        <option value="wp-form-7" <?php selected($default_mt, 'wp-form-7'); ?>>Contact Form 7</option>
+        <option value="wp-forms" <?php selected($default_mt, 'wp-form'); ?>>WPForms</option>
+        <option value="divi-form" <?php selected($default_mt, 'divi-form'); ?>>Divi Form</option>
+    </select>
+    <?php
+}
+
+// Render Select Pages Form field
+function fyfx_your_propfirm_plugin_form_pages_field_callback() {
+    $options = get_option('fyfx_your_propfirm_plugin_form_pages_field');
+    $selected_form_divi = isset($options['fyfx_your_propfirm_plugin_form_pages_field']) ? sanitize_text_field($options['fyfx_your_propfirm_plugin_form_pages_field']) : '';
     $divi_forms = get_divi_contact_forms();
     ?>
-    <select name="fyfx_your_propfirm_plugin_form_divi_field">
+    <select name="fyfx_your_propfirm_plugin_form_pages_field">
         <?php
             foreach ($divi_forms as $id => $title) {
                 $page_id = $id;
