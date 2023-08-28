@@ -93,6 +93,8 @@ register_deactivation_hook( __FILE__, 'deactivate_fyfx_propfirm_user' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-fyfx-propfirm-user.php';
 require plugin_dir_path( __FILE__ ) . 'includes/class-fyfx-propfirm-user-functions.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-fyfx-propfirm-user-functions-woocommerce.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-fyfx-propfirm-user-functions-contact-form.php';
 
 function filter_action_fyfx_propfirm_links( $links ) {
      $links['settings'] = '<a href="' . admin_url( 'admin.php?page=fyfx_your_propfirm_plugin' ) . '">' . __( 'Settings', 'fyfx-propfirm-user' ) . '</a>';
