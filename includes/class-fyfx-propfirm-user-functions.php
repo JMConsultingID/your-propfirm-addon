@@ -63,11 +63,13 @@ function fyfx_your_propfirm_plugin_contact_form_content() {
     ?>
     <div class="wrap">
         <h2>YourPropfirm Contact Form Plugin Settings</h2>
+        <form method="post" action="options.php">
         <?php
             settings_fields('fyfx_your_propfirm_plugin_contact_form_settings');
             do_settings_sections('fyfx_your_propfirm_plugin_contact_form_settings');
             submit_button();
         ?>
+        </form>
     </div>
     <?php
 }
