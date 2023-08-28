@@ -2,7 +2,7 @@
 // Add plugin settings page
 function fyfx_your_propfirm_plugin_settings_page() {
     add_menu_page(
-        'YPF Plugin',                // Judul pada menu utama
+        'YPF Plugin Dashboard',                // Judul pada menu utama
         'YPF Plugin',                // Judul pada menu utama
         'manage_options',            // Capability yang dibutuhkan untuk mengakses menu
         'ypf_plugin',                // Slug menu utama
@@ -31,15 +31,6 @@ function fyfx_your_propfirm_plugin_settings_page() {
 }
 
 add_action('admin_menu', 'fyfx_your_propfirm_plugin_settings_page');
-
-// Render settings YPF Dashboard Plugin page content
-function ypf_plugin_settings_page_content() {
-    ?>
-    <div class="wrap">
-        <h2>Dashboard YPF Plugin</h2>        
-    </div>
-    <?php
-}
 
 
 // Render settings YPF Woocomerce Plugin page content
