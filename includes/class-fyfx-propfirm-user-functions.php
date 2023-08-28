@@ -240,15 +240,9 @@ add_action('admin_init', 'fyfx_your_propfirm_plugin_settings_fields');
 
 function get_divi_contact_forms() {
     $args = array(
-        'post_type' => 'et_pb_layout', // Divi uses 'et_pb_layout' as the post type for its layouts
-        'posts_per_page' => -1, // Get all posts
-        'meta_query' => array(
-            array(
-                'key' => '_et_pb_predefined_layout', // This meta key is used by Divi to store layout data
-                'value' => 'contact_form', // Look for layouts that have 'contact_form' in their data
-                'compare' => 'LIKE'
-            )
-        )
+        'post_type' => 'page', // Query for pages
+        'posts_per_page' => -1, // Get all pages
+        's' => '[et_pb_contact_form', // Search for the Divi contact form shortcode
     );
 
     $query = new WP_Query($args);
