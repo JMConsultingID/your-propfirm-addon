@@ -24,7 +24,7 @@ function fyfx_your_propfirm_plugin_settings_page() {
 add_action('admin_menu', 'fyfx_your_propfirm_plugin_settings_page');
 
 // Render settings page content
-function hai_plugin_settings_page_content() {
+function ypf_plugin_settings_page_content() {
     ?>
     <div class="wrap">
         <h2>Dashboard YPF Plugin</h2>        
