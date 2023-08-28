@@ -260,6 +260,8 @@ function get_divi_contact_forms() {
             $forms[get_the_ID()] = get_the_ID();
         }
         wp_reset_postdata();
+    } else {
+        $forms[] = "None";
     }
 
     return $forms;
