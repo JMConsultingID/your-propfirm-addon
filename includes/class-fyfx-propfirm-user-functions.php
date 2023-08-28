@@ -4,9 +4,9 @@ function fyfx_your_propfirm_plugin_settings_page() {
     add_menu_page(
         'YPF Plugin',                // Judul pada menu utama
         'YPF Plugin',                // Judul pada menu utama
-        '',            // Capability yang dibutuhkan untuk mengakses menu
-        '',                // Slug menu utama
-        '', // Callback function untuk halaman konten
+        'manage_options',            // Capability yang dibutuhkan untuk mengakses menu
+        'ypf_plugin',                // Slug menu utama
+        'ypf_plugin_settings_page_content', // Callback function untuk halaman konten
         'dashicons-buddicons-replies',    // Ikona menu (Anda dapat mengganti dengan ikon lain)
         45                           // Urutan di dalam menu
     );
