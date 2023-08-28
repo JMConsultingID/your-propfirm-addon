@@ -32,6 +32,14 @@ function fyfx_your_propfirm_plugin_contact_form_settings_fields() {
         'fyfx_your_propfirm_plugin_contact_form_general'
     );
 
+    add_settings_field(
+        'fyfx_your_propfirm_plugin_form_trigger_field',
+        'From Trigger ID',
+        'fyfx_your_propfirm_plugin_form_trigger_field_callback',
+        'fyfx_your_propfirm_plugin_contact_form_settings',
+        'fyfx_your_propfirm_plugin_contact_form_general'
+    );
+
     register_setting(
         'fyfx_your_propfirm_plugin_contact_form_settings',
         'fyfx_your_propfirm_plugin_contact_form_enabled',
@@ -46,6 +54,11 @@ function fyfx_your_propfirm_plugin_contact_form_settings_fields() {
         array(
             'sanitize_callback' => 'sanitize_text_field'
         )
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_contact_form_settings',
+        'fyfx_your_propfirm_plugin_form_trigger_field'
     );
 }
 add_action('admin_init', 'fyfx_your_propfirm_plugin_contact_form_settings_fields');
@@ -113,4 +126,12 @@ function fyfx_your_propfirm_plugin_form_pages_field_callback() {
         ?>
     </select>
     <?php
+}
+
+// Render Form Trigger field
+function fyfx_your_propfirm_plugin_form_trigger_field_callback() {
+    $form_trigger = get_option('fyfx_your_propfirm_plugin_form_trigger_field');
+    echo '<div class="form-trigger-fields">';
+    echo '<input type="text" name="fyfx_your_propfirm_plugin_form_trigger_field" value="' . $form_trigger . '" style="width: 400px;" />';
+    echo '</div>';
 }
