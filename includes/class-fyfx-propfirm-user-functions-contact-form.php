@@ -16,9 +16,25 @@ function fyfx_your_propfirm_plugin_contact_form_settings_fields() {
         'fyfx_your_propfirm_plugin_contact_form_general'
     );
 
+    add_settings_field(
+        'fyfx_your_propfirm_plugin_form_divi_field',
+        'Select Page Contact Form',
+        'fyfx_your_propfirm_plugin_form_divi_field_callback',
+        'fyfx_your_propfirm_plugin_contact_form_settings',
+        'fyfx_your_propfirm_plugin_contact_form_general'
+    );
+
     register_setting(
         'fyfx_your_propfirm_plugin_contact_form_settings',
         'fyfx_your_propfirm_plugin_contact_form_enabled',
+        array(
+            'sanitize_callback' => 'sanitize_text_field'
+        )
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_contact_form_settings',
+        'fyfx_your_propfirm_plugin_form_divi_field',
         array(
             'sanitize_callback' => 'sanitize_text_field'
         )
