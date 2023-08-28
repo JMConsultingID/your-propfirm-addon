@@ -242,7 +242,6 @@ function get_divi_contact_forms() {
     $args = array(
         'post_type' => 'page', // Query for pages
         'posts_per_page' => -1, // Get all pages
-        's' => '[et_pb_contact_form', // Search for the Divi contact form shortcode
     );
 
     $query = new WP_Query($args);
