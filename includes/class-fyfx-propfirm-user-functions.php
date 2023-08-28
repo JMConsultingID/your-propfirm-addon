@@ -42,7 +42,7 @@ function ypf_plugin_settings_page_content() {
 }
 
 // Render settings form contact page content
-function fyfx_your_propfirm_plugin_contact_form() {
+function fyfx_your_propfirm_plugin_contact_form_content() {
     ?>
     <div class="wrap">
         <h2>YourPropfirm Contact Form Plugin Settings</h2>
