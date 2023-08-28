@@ -118,6 +118,14 @@ function fyfx_your_propfirm_plugin_settings_fields() {
     );
 
     add_settings_field(
+        'fyfx_your_propfirm_plugin_form_divi_field',
+        'Select Divi Form',
+        'fyfx_your_propfirm_plugin_form_divi_field_callback',
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_general'
+    );
+
+    add_settings_field(
         'fyfx_your_propfirm_plugin_request_method',
         'Request Method',
         'fyfx_your_propfirm_plugin_request_method_callback',
@@ -208,6 +216,14 @@ function fyfx_your_propfirm_plugin_settings_fields() {
 
     register_setting(
         'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_form_divi_field',
+        array(
+            'sanitize_callback' => 'sanitize_text_field'
+        )
+    );
+
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
         'fyfx_your_propfirm_plugin_request_method',
         array(
             'sanitize_callback' => 'sanitize_text_field',
@@ -221,6 +237,28 @@ function fyfx_your_propfirm_plugin_settings_fields() {
     );
 }
 add_action('admin_init', 'fyfx_your_propfirm_plugin_settings_fields');
+
+function get_divi_contact_forms() {
+    $args = array(
+        'post_type' => 'page', // Anda dapat mengganti ini dengan 'post' atau custom post type lainnya jika diperlukan
+        'posts_per_page' => -1,
+        's' => 'et_pb_contact_form', // Mencari halaman dengan modul formulir kontak Divi
+    );
+
+    $query = new WP_Query($args);
+    $forms = array();
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $forms[get_the_ID()] = get_the_title();
+        }
+        wp_reset_postdata();
+    }
+
+    return $forms;
+}
+
 
 // Render enable plugin field
 function fyfx_your_propfirm_plugin_enabled_callback() {
@@ -338,6 +376,21 @@ function fyfx_your_propfirm_plugin_mt_version_field_callback() {
     } else {
         echo 'N/A';
     }
+}
+
+// Render Form Divi form field
+function fyfx_your_propfirm_plugin_form_divi_field_callback() {
+    $form_divi = get_option('fyfx_your_propfirm_plugin_form_divi_field');
+    $divi_forms = get_divi_contact_forms();
+    ?>
+    <select name="fyfx_your_propfirm_plugin_form_divi_field">
+        <?php
+            foreach ($divi_forms as $id => $title) {
+                echo '<option value="' . $id . '">' . $title . '</option>';
+            }
+        ?>
+    </select>
+    <?php
 }
 
 // Render request method field
