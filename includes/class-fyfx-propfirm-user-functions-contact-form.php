@@ -32,3 +32,14 @@ add_action('admin_init', 'fyfx_your_propfirm_plugin_contact_form_settings_fields
 function fyfx_your_propfirm_plugin_contact_form_section_callback() {
     echo 'Configure the Contact Form settings for YPF Plugin.';
 }
+
+// Render enable plugin field
+function fyfx_your_propfirm_plugin_contact_form_enabled_callback() {
+    $plugin_enabled = get_option('fyfx_your_propfirm_plugin_contact_form_enabled');
+    ?>
+    <select name="fyfx_your_propfirm_plugin_contact_form_enabled">
+        <option value="enable" <?php selected($plugin_enabled, 'enable'); ?>>Enabled</option>
+        <option value="disable" <?php selected($plugin_enabled, 'disable'); ?>>Disabled</option>
+    </select>
+    <?php
+}
