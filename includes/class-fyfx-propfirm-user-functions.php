@@ -239,16 +239,27 @@ function fyfx_your_propfirm_plugin_settings_fields() {
 add_action('admin_init', 'fyfx_your_propfirm_plugin_settings_fields');
 
 function get_divi_contact_forms() {
-    global $wpdb;
+    $args = array(
+        'post_type' => 'et_pb_layout', // Divi uses 'et_pb_layout' as the post type for its layouts
+        'posts_per_page' => -1, // Get all posts
+        'meta_query' => array(
+            array(
+                'key' => '_et_pb_predefined_layout', // This meta key is used by Divi to store layout data
+                'value' => 'contact_form', // Look for layouts that have 'contact_form' in their data
+                'compare' => 'LIKE'
+            )
+        )
+    );
 
-    // Mencari halaman atau pos yang memiliki shortcode Divi untuk formulir kontak
-    $results = $wpdb->get_results("SELECT ID, post_title FROM {$wpdb->posts} WHERE post_content LIKE '%et_pb_contact_form%' AND post_status = 'publish'", OBJECT);
-
+    $query = new WP_Query($args);
     $forms = array();
-    if ($results) {
-        foreach ($results as $result) {
-            $forms[$result->ID] = $result->post_title;
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $forms[get_the_ID()] = get_the_ID();
         }
+        wp_reset_postdata();
     }
 
     return $forms;
