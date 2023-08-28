@@ -1,22 +1,60 @@
 <?php
 // Add plugin settings page
 function fyfx_your_propfirm_plugin_settings_page() {
+    add_menu_page(
+        'YPF Plugin',                // Judul pada menu utama
+        'YPF Plugin',                // Judul pada menu utama
+        'manage_options',            // Capability yang dibutuhkan untuk mengakses menu
+        'ypf_plugin',                // Slug menu utama
+        'ypf_plugin_settings_page_content', // Callback function untuk halaman konten
+        'dashicons-buddicons-replies',    // Ikona menu (Anda dapat mengganti dengan ikon lain)
+        45                           // Urutan di dalam menu
+    );
+
     add_submenu_page(
-        'woocommerce',
-        'Add On Your Propfirm',
-        'Add On Your Propfirm',
-        'manage_options',
-        'fyfx_your_propfirm_plugin',
-        'fyfx_your_propfirm_plugin_settings_page_content'
+        'ypf_plugin',    // Slug menu utama ('jm_autocomplete_plugin' dari menu utama di atas)
+        'Add On Your Propfirm',      // Judul submenu
+        'Add On Your Propfirm',      // Judul submenu
+        'manage_options',            // Capability yang dibutuhkan untuk mengakses submenu
+        'fyfx_your_propfirm_plugin', // Slug submenu
+        'fyfx_your_propfirm_plugin_settings_page_content' // Callback function untuk halaman konten submenu
+    );
+
+    add_submenu_page(
+        'ypf_plugin',    // Slug menu utama ('jm_autocomplete_plugin' dari menu utama di atas)
+        'YPF Contact Form',      // Judul submenu
+        'YPF Contact Form',      // Judul submenu
+        'manage_options',            // Capability yang dibutuhkan untuk mengakses submenu
+        'fyfx_your_propfirm_plugin_contact_form', // Slug submenu
+        'fyfx_your_propfirm_plugin_contact_form_content' // Callback function untuk halaman konten submenu
     );
 }
+
 add_action('admin_menu', 'fyfx_your_propfirm_plugin_settings_page');
+
+// Render settings dashboard page content
+function ypf_plugin_settings_page_content() {
+    ?>
+    <div class="wrap">
+        <h2>Dashboard YPF Plugin</h2>        
+    </div>
+    <?php
+}
+
+// Render settings form contact page content
+function fyfx_your_propfirm_plugin_contact_form() {
+    ?>
+    <div class="wrap">
+        <h2>YourPropfirm Contact Form Plugin Settings</h2>
+    </div>
+    <?php
+}
 
 // Render settings page content
 function fyfx_your_propfirm_plugin_settings_page_content() {
     ?>
     <div class="wrap">
-        <h2>Add On YourPropfirm User Plugin Settings</h2>
+        <h2>YourPropfirm Woocommerce Plugin Settings</h2>
         <form method="post" action="options.php">
             <?php
                 settings_fields('fyfx_your_propfirm_plugin_settings');
