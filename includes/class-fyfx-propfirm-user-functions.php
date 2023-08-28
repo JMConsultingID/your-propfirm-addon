@@ -58,7 +58,6 @@ function fyfx_your_propfirm_plugin_settings_page_content() {
     <?php
 }
 
-<?php
 // Render settings YPF Contact Form Plugin page content
 function fyfx_your_propfirm_plugin_contact_form_content() {
     ?>
