@@ -64,3 +64,61 @@ function fyfx_your_propfirm_plugin_contact_form_content() {
     </div>
     <?php
 }
+
+// Add a custom field to WooCommerce product
+function your_propfirm_addon_add_program_id_field() {
+    global $woocommerce, $post;
+
+    // Get the product ID
+    $product_id = $post->ID;
+
+    // Display the custom field on the product edit page
+    woocommerce_wp_text_input(
+        array(
+            'id'          => '_program_id',
+            'label'       => __('Program Id (Your Propfirm)', 'woocommerce'),
+            'placeholder' => __('Enter Program Id (Your Propfirm)', 'woocommerce'),
+            'desc_tip'    => true,
+            'description' => __('Enter Program Id (Your Propfirm).', 'woocommerce'),
+            'wrapper_class' => 'show_if_simple',
+        )
+    );
+}
+add_action('woocommerce_product_options_general_product_data', 'your_propfirm_addon_add_program_id_field', 9);
+
+// Save the custom field value
+function your_propfirm_addon_save_program_id_field($product_id) {
+    $program_id = sanitize_text_field($_POST['_program_id']);
+    update_post_meta($product_id, '_program_id', esc_attr($program_id));
+}
+add_action('woocommerce_process_product_meta', 'your_propfirm_addon_save_program_id_field');
+
+// Menambahkan kolom "Program ID" ke daftar produk di halaman admin
+function add_program_id_column_to_admin_products($columns) {
+    $new_columns = array();
+
+    foreach ($columns as $key => $name) {
+        $new_columns[$key] = $name;
+
+        // Menambahkan kolom setelah kolom "SKU"
+        if ('sku' === $key) {
+            $new_columns['program_id'] = __('YPF-ID', 'woocommerce');
+        }
+    }
+
+    return $new_columns;
+}
+add_filter('manage_edit-product_columns', 'add_program_id_column_to_admin_products', 20);
+
+// Menampilkan nilai dari custom field "_program_id" di kolom "Program ID"
+function display_program_id_in_admin_products($column, $post_id) {
+    if ('program_id' === $column) {
+        $program_id = get_post_meta($post_id, '_program_id', true);
+        if ($program_id) {
+            echo esc_html($program_id);
+        } else {
+            echo '—'; // Tampilkan tanda dash jika tidak ada nilai
+        }
+    }
+}
+add_action('manage_product_posts_custom_column', 'display_program_id_in_admin_products', 10, 2);

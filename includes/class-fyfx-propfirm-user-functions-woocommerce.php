@@ -693,31 +693,3 @@ function add_api_response_js_to_sellkit_thankyou_page() {
     }    
 }
 add_action('woocommerce_before_customer_object_save', 'add_api_response_js_to_sellkit_thankyou_page');
-
-// Add a custom field to WooCommerce product
-function your_propfirm_addon_add_program_id_field() {
-    global $woocommerce, $post;
-
-    // Get the product ID
-    $product_id = $post->ID;
-
-    // Display the custom field on the product edit page
-    woocommerce_wp_text_input(
-        array(
-            'id'          => '_program_id',
-            'label'       => __('Program Id (Your Propfirm)', 'woocommerce'),
-            'placeholder' => __('Enter Program Id (Your Propfirm)', 'woocommerce'),
-            'desc_tip'    => true,
-            'description' => __('Enter Program Id (Your Propfirm).', 'woocommerce'),
-            'wrapper_class' => 'show_if_simple',
-        )
-    );
-}
-add_action('woocommerce_product_options_general_product_data', 'your_propfirm_addon_add_program_id_field', 9);
-
-// Save the custom field value
-function your_propfirm_addon_save_program_id_field($product_id) {
-    $program_id = sanitize_text_field($_POST['_program_id']);
-    update_post_meta($product_id, '_program_id', esc_attr($program_id));
-}
-add_action('woocommerce_process_product_meta', 'your_propfirm_addon_save_program_id_field');
