@@ -485,8 +485,7 @@ add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_afte
 // Create user via API when successful payment is made
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
     // Retrieve endpoint URL and API Key from plugin settings
-    $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');
-    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+    $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');    
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -576,6 +575,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
 
 function get_api_data($order, $program_id_value) {
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
     $user_email = $order->get_billing_email();
     $user_first_name = $order->get_billing_first_name();
     $user_last_name = $order->get_billing_last_name();
