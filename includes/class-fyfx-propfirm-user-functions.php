@@ -630,11 +630,9 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     }
 
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
-    $key_url = $endpoint_url . " - " .$api_key;
     
     // Menyimpan respons API sebagai metadata pesanan
     update_post_meta($order_id, 'api_response-'.$program_id_value,$api_response_test);
-    update_post_meta($order_id, 'api_response_key-'.$program_id_value,$key_url);
     update_post_meta($order_id, 'api_program_id-'.$program_id_value,$program_id_value);
 }
 
