@@ -566,7 +566,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                 // Send other products to endpoint_url_2 if user_id is available
                 if ($user_id) {
                     $api_data = array(
-                        'MtVersion' => 'MT4',
+                        'mtVersion' => 'MT4',
                         'programId' => $program_id
                     );
                     $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
