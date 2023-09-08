@@ -515,6 +515,19 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $items = $order->get_items();
         $first_product = null;
 
+        $mt_version = $_POST['mt_version'];
+        if (!empty($mt_version)){
+            $mt_version_value = $mt_version;
+        }
+        else{
+            if (!empty($default_mt)){
+                $mt_version_value = $default_mt;
+            }
+            else{
+                $mt_version_value = 'MT4';
+            }
+        }
+
         $program_id_value = '';
         foreach ($items as $item) {
             $product = $item->get_product();
@@ -532,7 +545,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             // Use the first product to send to endpoint_url_1
             if (!$first_product) {
                 $first_product = $product;
-                $api_data = get_api_data($order, $program_id_value);
+                $api_data = get_api_data($order, $program_id_value, $mt_version_value);
                 // Send the API request
                 if ($request_method === 'curl') {
                     $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
@@ -552,8 +565,8 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                 // Send other products to endpoint_url_2 if user_id is available
                 if ($user_id) {
                     $api_data = array(
-                        'mtVersion' => get_post_meta($product->get_id(), 'mtVersion', true),
-                        'programId' => get_post_meta($product->get_id(), 'programId', true)
+                        'mtVersion' => $mt_version_value,
+                        'programId' => $program_id
                     );
                     $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
                     if ($request_method === 'curl') {
@@ -574,7 +587,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 }
 add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
 
-function get_api_data($order, $program_id_value) {
+function get_api_data($order, $program_id_value, $mt_version_value) {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
     $user_email = $order->get_billing_email();
     $user_first_name = $order->get_billing_first_name();
@@ -584,18 +597,7 @@ function get_api_data($order, $program_id_value) {
     $user_zip_code = $order->get_billing_postcode();
     $user_country = $order->get_billing_country();
     $user_phone = $order->get_billing_phone();
-    $mt_version = 'MT4';
-    if (!empty($mt_version)){
-        $mt_version_value = $mt_version;
-    }
-    else{
-        if (!empty($default_mt)){
-            $mt_version_value = $default_mt;
-        }
-        else{
-            $mt_version_value = 'MT4';
-        }
-    }
+
     return array(
         'email' => $user_email,
         'firstname' => $user_first_name,
