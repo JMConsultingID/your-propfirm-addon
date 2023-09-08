@@ -543,7 +543,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 }
-                handle_api_response_error($http_status, $api_response, $order_id);
+                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value );
 
                 // Get the user ID from the response
                 $user_data = json_decode($response['api_response'], true);
@@ -565,7 +565,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
-                    handle_api_response_error($http_status, $api_response, $order_id);
+                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value );
                 }
             }
 
@@ -584,7 +584,7 @@ function get_api_data($order, $program_id_value) {
     $user_zip_code = $order->get_billing_postcode();
     $user_country = $order->get_billing_country();
     $user_phone = $order->get_billing_phone();
-    $mt_version = $_POST['mt_version'];
+    $mt_version = 'MT4';
     if (!empty($mt_version)){
         $mt_version_value = $mt_version;
     }
@@ -610,8 +610,9 @@ function get_api_data($order, $program_id_value) {
     );
 }
 
-function handle_api_response_error($http_status, $api_response, $order_id) {
+function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
+    $api_data = get_api_data($order, $program_id_value);
 
     if ($http_status == 201) {
         // Jika pengguna berhasil dibuat (kode respons: 201)
@@ -632,8 +633,8 @@ function handle_api_response_error($http_status, $api_response, $order_id) {
     $key_url = $endpoint_url . " - " .$api_key;
     
     // Menyimpan respons API sebagai metadata pesanan
-    update_post_meta($order_id, 'api_response',$api_response_test);
-    update_post_meta($order_id, 'api_response_key',$key_url);
+    update_post_meta($order_id, 'api_response-'.$program_id_value,$api_response_test);
+    update_post_meta($order_id, 'api_response_key-'.$program_id_value,$key_url);
     update_post_meta($order_id, 'api_program_id-'.$program_id_value,$program_id_value);
 }
 
