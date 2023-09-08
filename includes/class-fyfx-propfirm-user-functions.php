@@ -511,6 +511,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 
     if ($new_status == 'completed' && $old_status != 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
+        $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
         // Initialize variables
         $items = $order->get_items();
         $first_product = null;
@@ -587,8 +588,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 }
 add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
 
-function get_api_data($order, $program_id_value, $mt_version_value) {
-    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+function get_api_data($order, $program_id_value, $mt_version_value) {    
     $user_email = $order->get_billing_email();
     $user_first_name = $order->get_billing_first_name();
     $user_last_name = $order->get_billing_last_name();
@@ -615,9 +615,8 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
 function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
-        // Jika pengguna berhasil dibuat (kode respons: 201)
-        //wc_add_notice('User created successfully.' . $api_response, 'success');
-        return; // Keluar dari fungsi jika sukses
+        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
+        $error_message = 'success';
     } elseif ($http_status == 400) {
         // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 400.';
