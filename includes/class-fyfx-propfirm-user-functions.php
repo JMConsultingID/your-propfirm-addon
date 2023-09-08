@@ -634,7 +634,7 @@ function handle_api_response_error($http_status, $api_response) {
     // Menyimpan respons API sebagai metadata pesanan
     update_post_meta($order_id, 'api_response',$api_response_test);
     update_post_meta($order_id, 'api_response_key',$key_url);
-    update_post_meta($order_id, 'api_program_id',$program_id_value);
+    update_post_meta($order_id, 'api_program_id-'.$program_id_value,$program_id_value);
 }
 
 // Send API request using CURL
