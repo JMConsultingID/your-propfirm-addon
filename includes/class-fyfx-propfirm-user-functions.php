@@ -567,18 +567,20 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                 $user_id = isset($user_data['id']) ? $user_data['id'] : null;
             } else {
                 // Send other products to endpoint_url_2 if user_id is available
+                $api_data_2 = get_api_data($order, $program_id_value, $mt_version_value);
+                $api_data_program_id = $api_data_2['mtVersion'];
                 if ($user_id) {
-                    $api_data = array(
+                    $api_data_account = array(
                         'mtVersion' => 'MT4',
-                        'programId' => $program_id_value
+                        'programId' => $api_data_program_id
                     );
                     $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
                     if ($request_method === 'curl') {
-                        $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url_2, $api_key, $api_data);
+                        $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url_2, $api_key, $api_data_account);
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     } else {
-                        $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data);
+                        $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data_account);
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
