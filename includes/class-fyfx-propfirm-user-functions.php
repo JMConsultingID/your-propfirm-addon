@@ -637,10 +637,6 @@ function handle_api_response_error($http_status, $api_response) {
     update_post_meta($order_id, 'api_program_id',$program_id_value);
 }
 
-// Panggil fungsi ini setelah $response dan $response2
-handle_api_response_error($http_status, $api_response);
-
-
 // Send API request using CURL
 function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
      // Mengirim data ke API menggunakan cURL
