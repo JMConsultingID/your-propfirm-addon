@@ -512,105 +512,137 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 
     if ($new_status == 'completed' && $old_status != 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
-        $user_email = $order->get_billing_email();
-        $user_first_name = $order->get_billing_first_name();
-        $user_last_name = $order->get_billing_last_name();
-
-        // Set additional user details  
-        $user_address = $order->get_billing_address_1();
-        $user_city = $order->get_billing_city();
-        $user_zip_code = $order->get_billing_postcode();
-        $user_country = $order->get_billing_country();
-        $user_phone = $order->get_billing_phone();
-
-        // Mendapatkan SKU produk terkait dari pesanan
+        // Initialize variables
         $items = $order->get_items();
-        $program_id = '';
+        $first_product = null;
+
+        $program_id_value = '';
         foreach ($items as $item) {
-            $product = $item->get_product();            
-            $get_program_id = get_post_meta($product->get_id(), '_program_id', true);
+            $product = $item->get_product();
+            $program_id = get_post_meta($product->get_id(), '_program_id', true);
             $sku_product = $product->get_sku();
-            if (!empty($get_program_id)) {
-                $program_id = $get_program_id;
+
+            if (!empty($program_id)) {
+                $program_id_value = $program_id;
             } elseif (!empty($sku_product)) {
-                $program_id = $sku_product; // Mendapatkan SKU produk
-            } else{
-                $program_id = '000-000';
+                $program_id_value = $sku_product;
+            } else {
+                $program_id_value = '000-000';
             }
-            break; // Hanya mengambil SKU produk dari item pertama
-        }
 
-        $mt_version = $_POST['mt_version'];
-        if (!empty($mt_version)){
-            $mt_version_value = $mt_version;
-        }
-        else{
-            if (!empty($default_mt)){
-                $mt_version_value = $default_mt;
+            // Use the first product to send to endpoint_url_1
+            if (!$first_product) {
+                $first_product = $product;
+                $api_data = get_api_data($order, $program_id_value);
+                // Send the API request
+                if ($request_method === 'curl') {
+                    $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
+                    $http_status = $response['http_status'];
+                    $api_response = $response['api_response'];
+                } else {
+                    $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data);
+                    $http_status = $response['http_status'];
+                    $api_response = $response['api_response'];
+                }
+                handle_api_response_error($http_status, $api_response);
+
+                // Get the user ID from the response
+                $user_data = json_decode($response['api_response'], true);
+                $user_id = isset($user_data['id']) ? $user_data['id'] : null;
+            } else {
+                // Send other products to endpoint_url_2 if user_id is available
+                if ($user_id) {
+                    $api_data = array(
+                        'mtVersion' => get_post_meta($product->get_id(), 'mtVersion', true),
+                        'programId' => get_post_meta($product->get_id(), 'programId', true)
+                    );
+                    $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
+                    if ($request_method === 'curl') {
+                        $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url_2, $api_key, $api_data);
+                        $http_status = $response['http_status'];
+                        $api_response = $response['api_response'];
+                    } else {
+                        $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data);
+                        $http_status = $response['http_status'];
+                        $api_response = $response['api_response'];
+                    }
+                    handle_api_response_error($http_status, $api_response);
+                }
             }
-            else{
-                $mt_version_value = 'MT4';
-            }
+
         }
-
-        $api_data = array(
-            'email' => $user_email,
-            'firstname' => $user_first_name,
-            'lastname' => $user_last_name,
-            'programId' => $program_id, // Menggunakan SKU produk sebagai programId            
-            'mtVersion' => $mt_version_value,
-            'addressLine' => $user_address,
-            'city' => $user_city,
-            'zipCode' => $user_zip_code,
-            'country' => $user_country,
-            'phone' => $user_phone
-        );
-
-        // Send the API request
-        if ($request_method === 'curl') {
-            $response = fyfx_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
-            $http_status = $response['http_status'];
-            $api_response = $response['api_response'];
-        } else {
-            $response = fyfx_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data);
-            $http_status = $response['http_status'];
-            $api_response = $response['api_response'];
-        }    
-
-        if ($http_status == 201) {
-            // Jika pengguna berhasil dibuat (kode respons: 201)
-            //wc_add_notice('User created successfully.' . $api_response, 'success');
-        } elseif ($http_status == 400) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 400.';
-            //wc_add_notice($error_message .' '. $api_response, 'error');
-        } elseif ($http_status == 409) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 409.';
-            //wc_add_notice($error_message .' '. $api_response, 'error');
-        } elseif ($http_status == 500) {
-            // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type 500.';
-            //wc_add_notice($error_message .' '. $api_response, 'error');
-        } else {
-            $error_message = isset($api_response['error']) ? $api_response['errors'] : 'An error occurred while creating the user. Error Type Unknown.';
-            // Menampilkan pemberitahuan umum jika kode respons tidak dikenali
-            //wc_add_notice($error_message .' '. $api_response, 'error');
-        }
-
-        $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
-        $key_url = $endpoint_url . " - " .$api_key;
-        
-        // Menyimpan respons API sebagai metadata pesanan
-        update_post_meta($order_id, 'api_response',$api_response_test);
-        update_post_meta($order_id, 'api_response_key',$key_url);
-        update_post_meta($order_id, 'api_program_id',$get_program_id);
     }
 }
 add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
 
+function get_api_data($order, $program_id_value) {
+    $user_email = $order->get_billing_email();
+    $user_first_name = $order->get_billing_first_name();
+    $user_last_name = $order->get_billing_last_name();
+    $user_address = $order->get_billing_address_1();
+    $user_city = $order->get_billing_city();
+    $user_zip_code = $order->get_billing_postcode();
+    $user_country = $order->get_billing_country();
+    $user_phone = $order->get_billing_phone();
+    $mt_version = $_POST['mt_version'];
+    if (!empty($mt_version)){
+        $mt_version_value = $mt_version;
+    }
+    else{
+        if (!empty($default_mt)){
+            $mt_version_value = $default_mt;
+        }
+        else{
+            $mt_version_value = 'MT4';
+        }
+    }
+    return array(
+        'email' => $user_email,
+        'firstname' => $user_first_name,
+        'lastname' => $user_last_name,
+        'programId' => $program_id_value,             
+        'mtVersion' => $mt_version_value,
+        'addressLine' => $user_address,
+        'city' => $user_city,
+        'zipCode' => $user_zip_code,
+        'country' => $user_country,
+        'phone' => $user_phone
+    );
+}
+
+function handle_api_response_error($http_status, $api_response) {
+    $error_message = 'An error occurred while creating the user. Error Type Unknown.';
+
+    if ($http_status == 201) {
+        // Jika pengguna berhasil dibuat (kode respons: 201)
+        //wc_add_notice('User created successfully.' . $api_response, 'success');
+        return; // Keluar dari fungsi jika sukses
+    } elseif ($http_status == 400) {
+        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
+        $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 400.';
+    } elseif ($http_status == 409) {
+        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 409)
+        $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 409.';
+    } elseif ($http_status == 500) {
+        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 500)
+        $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 500.';
+    }
+
+    $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
+    $key_url = $endpoint_url . " - " .$api_key;
+    
+    // Menyimpan respons API sebagai metadata pesanan
+    update_post_meta($order_id, 'api_response',$api_response_test);
+    update_post_meta($order_id, 'api_response_key',$key_url);
+    update_post_meta($order_id, 'api_program_id',$program_id_value);
+}
+
+// Panggil fungsi ini setelah $response dan $response2
+handle_api_response_error($http_status, $api_response);
+
+
 // Send API request using CURL
-function fyfx_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
+function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
      // Mengirim data ke API menggunakan cURL
     $api_url = $endpoint_url;
     $headers = array(
@@ -645,7 +677,7 @@ function fyfx_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $a
     );
 }
 
-function fyfx_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data) {
+function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data) {
     // Mengirim data ke API menggunakan WP_REMOTE_POST
     $api_url = $endpoint_url;
     $headers = array(
