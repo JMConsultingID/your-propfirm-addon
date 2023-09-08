@@ -614,8 +614,6 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
 
 function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
-    $api_data = get_api_data($order, $program_id_value);
-
     if ($http_status == 201) {
         // Jika pengguna berhasil dibuat (kode respons: 201)
         //wc_add_notice('User created successfully.' . $api_response, 'success');
