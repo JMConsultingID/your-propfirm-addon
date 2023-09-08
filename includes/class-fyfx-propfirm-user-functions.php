@@ -509,6 +509,9 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         return;
     }
 
+    // Get the order object
+    $order = wc_get_order($order_id);  
+
     if ($new_status == 'completed' && $old_status != 'completed') {
         $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
         $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
@@ -567,7 +570,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                 if ($user_id) {
                     $api_data = array(
                         'mtVersion' => 'MT4',
-                        'programId' => $program_id
+                        'programId' => $program_id_value
                     );
                     $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
                     if ($request_method === 'curl') {
