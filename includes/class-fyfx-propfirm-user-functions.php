@@ -518,6 +518,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         // Initialize variables
         $items = $order->get_items();
         $first_product = null;
+        $products_loop_id = 1; // Inisialisasi id
 
         $mt_version = $_POST['mt_version'];
         if (!empty($mt_version)){
@@ -568,7 +569,8 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             } else {
                 // Send other products to endpoint_url_2 if user_id is available
                 $api_data_2 = get_api_data($order, $program_id_value, $mt_version_value);
-                $api_data_program_id = $api_data_2['mtVersion'];
+                $api_data_program_id = $api_data_2['programId'];
+                update_post_meta($order_id, 'program_ids-'.$products_loop_id,$api_data_program_id);
                 if ($user_id) {
                     $api_data_account = array(
                         'mtVersion' => 'MT4',
@@ -587,7 +589,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                     handle_api_response_error($http_status, $api_response, $order_id, $program_id_value );
                 }
             }
-
+            $products_loop_id++;
         }
     }
 }
