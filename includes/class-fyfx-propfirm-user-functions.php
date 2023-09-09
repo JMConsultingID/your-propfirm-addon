@@ -551,8 +551,6 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             if (!$first_product) {
                 $first_product = $product;
                 $api_data = get_api_data($order, $program_id_value, $mt_version_value);
-                update_post_meta($order_id, 'post-mtVersion-'.$products_loop_id,$mt_version_value);
-                update_post_meta($order_id, 'post-programID-'.$products_loop_id,$program_id_value);
                 // Send the API request
                 if ($request_method === 'curl') {
                     $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
@@ -568,9 +566,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                 // Get the user ID from the response
                 $user_data = json_decode($response['api_response'], true);
                 $user_id = isset($user_data['id']) ? $user_data['id'] : null;
-            } else {          
-                update_post_meta($order_id, 'post-mtVersion-'.$products_loop_id,$mt_version_value);
-                update_post_meta($order_id, 'post-programID-'.$products_loop_id,$program_id_value);
+            } else {
                 if ($user_id) {
                     $api_data_account = array(
                         'mtVersion' => $mt_version_value,
@@ -639,7 +635,6 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     
     // Menyimpan respons API sebagai metadata pesanan
     update_post_meta($order_id, 'api_response-'.$products_loop_id,$api_response_test);
-    update_post_meta($order_id, 'api_program_id-'.$products_loop_id,$program_id_value);
 }
 
 // Send API request using CURL
