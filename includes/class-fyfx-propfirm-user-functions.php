@@ -569,16 +569,13 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                 $user_data = json_decode($response['api_response'], true);
                 $user_id = isset($user_data['id']) ? $user_data['id'] : null;
             } else {
-                // Send other products to endpoint_url_2 if user_id is available
-                $api_data_2 = get_api_data($order, $program_id_value, $mt_version_value);
-                $api_data_program_id = $api_data_2['programId'];
-                update_post_meta($order_id, 'program_ids-'.$products_loop_id,$api_data_program_id);
-                update_post_meta($order_id, 'A-test-mtVersion-'.$products_loop_id,$mt_version_value);
-                update_post_meta($order_id, 'A-test-program-'.$products_loop_id,$program_id_value);               
+                update_post_meta($order_id, 'B-A_userID-'.$products_loop_id,$user_id);          
+                update_post_meta($order_id, 'B-test-mtVersion-'.$products_loop_id,$mt_version_value);
+                update_post_meta($order_id, 'B-test-program-'.$products_loop_id,$program_id_value);
                 if ($user_id) {
                     $api_data_account = array(
-                        'mtVersion' => 'MT4',
-                        'programId' => $api_data_program_id
+                        'mtVersion' => $mt_version_value,
+                        'programId' => $program_id_value
                     );
                     $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
                     if ($request_method === 'curl') {
