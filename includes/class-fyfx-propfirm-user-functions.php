@@ -551,8 +551,8 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             if (!$first_product) {
                 $first_product = $product;
                 $api_data = get_api_data($order, $program_id_value, $mt_version_value);
-                update_post_meta($order_id, 'A-test-mtVersion-'.$products_loop_id,$mt_version_value);
-                update_post_meta($order_id, 'A-test-program-'.$products_loop_id,$program_id_value);
+                update_post_meta($order_id, 'post-mtVersion-'.$products_loop_id,$mt_version_value);
+                update_post_meta($order_id, 'post-programID-'.$products_loop_id,$program_id_value);
                 // Send the API request
                 if ($request_method === 'curl') {
                     $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
