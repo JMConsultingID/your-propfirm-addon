@@ -563,15 +563,14 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 }
-                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value );
+                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id );
 
                 // Get the user ID from the response
                 $user_data = json_decode($response['api_response'], true);
                 $user_id = isset($user_data['id']) ? $user_data['id'] : null;
-            } else {
-                update_post_meta($order_id, 'B-A_userID-'.$products_loop_id,$user_id);          
-                update_post_meta($order_id, 'B-test-mtVersion-'.$products_loop_id,$mt_version_value);
-                update_post_meta($order_id, 'B-test-program-'.$products_loop_id,$program_id_value);
+            } else {          
+                update_post_meta($order_id, 'post-mtVersion-'.$products_loop_id,$mt_version_value);
+                update_post_meta($order_id, 'post-programID-'.$products_loop_id,$program_id_value);
                 if ($user_id) {
                     $api_data_account = array(
                         'mtVersion' => $mt_version_value,
@@ -587,7 +586,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
-                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value );
+                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id );
                 }
             }
             $products_loop_id++;
@@ -620,7 +619,7 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
     );
 }
 
-function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value) {
+function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
         // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
@@ -639,8 +638,8 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
     
     // Menyimpan respons API sebagai metadata pesanan
-    update_post_meta($order_id, 'api_response-'.$program_id_value,$api_response_test);
-    update_post_meta($order_id, 'api_program_id-'.$program_id_value,$program_id_value);
+    update_post_meta($order_id, 'api_response-'.$products_loop_id,$api_response_test);
+    update_post_meta($order_id, 'api_program_id-'.$products_loop_id,$program_id_value);
 }
 
 // Send API request using CURL
