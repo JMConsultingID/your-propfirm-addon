@@ -840,6 +840,3 @@ function add_program_id_quick_edit_field($column_name, $post_type) {
         </fieldset>';
 }
 add_action('quick_edit_custom_box', 'add_program_id_quick_edit_field', 10, 2);
-
-
-
