@@ -29,8 +29,9 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 	jQuery(document).ready(function($) {
+
     // Saat Quick Edit dipanggil, set value dari custom field "_program_id"
-    $('#the-list').on('click', '.editinline', function() {
+	    $('#the-list').on('click', '.editinline', function() {
 
 	        // Ambil row ID dari produk yang sedang diedit
 	        var post_id = $(this).closest('tr').attr('id');
@@ -44,6 +45,7 @@
 	    });
 
 	});
+
 
 
 })( jQuery );
