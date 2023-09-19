@@ -808,3 +808,36 @@ function display_program_id_in_admin_products($column, $post_id) {
     }
 }
 add_action('manage_product_posts_custom_column', 'display_program_id_in_admin_products', 10, 2);
+
+function your_propfirm_save_quick_edit_data($product_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return $product_id;
+
+    // Jika ini adalah permintaan dari Quick Edit
+    if (isset($_POST['_inline_edit']) && wp_verify_nonce($_POST['_inline_edit'], 'inlineeditnonce')) {
+        if (isset($_POST['_program_id'])) {
+            update_post_meta($product_id, '_program_id', sanitize_text_field($_POST['_program_id']));
+        }
+    }
+
+    return $product_id;
+}
+add_action('save_post_product', 'your_propfirm_save_quick_edit_data');
+
+function add_program_id_quick_edit_field($column_name, $post_type) {
+    if ($column_name != 'program_id' || $post_type != 'product') return;
+
+    // Output custom field
+    echo '<fieldset class="inline-edit-col-left">
+            <div class="inline-edit-col">
+                <label class="alignleft">
+                    <span class="title">' . __('YPF-ID', 'woocommerce') . '</span>
+                    <span class="input-text-wrap">
+                        <input type="text" name="_program_id" class="ptitle" value="" />
+                    </span>
+                </label>
+            </div>
+        </fieldset>';
+}
+add_action('quick_edit_custom_box', 'add_program_id_quick_edit_field', 10, 2);
+
