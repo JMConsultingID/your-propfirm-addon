@@ -801,7 +801,7 @@ function display_program_id_in_admin_products($column, $post_id) {
     if ('program_id' === $column) {
         $program_id = get_post_meta($post_id, '_program_id', true);
         if ($program_id) {
-            echo esc_html($program_id);
+            echo '<span id="program_id-' . $post_id . '">' . esc_html($program_id) . '</span>'; // Tambahkan ID ke elemen span
         } else {
             echo '—'; // Tampilkan tanda dash jika tidak ada nilai
         }
@@ -841,15 +841,5 @@ function add_program_id_quick_edit_field($column_name, $post_type) {
 }
 add_action('quick_edit_custom_box', 'add_program_id_quick_edit_field', 10, 2);
 
-function display_program_id_in_admin_products($column, $post_id) {
-    if ('program_id' === $column) {
-        $program_id = get_post_meta($post_id, '_program_id', true);
-        if ($program_id) {
-            echo '<span id="program_id-' . $post_id . '">' . esc_html($program_id) . '</span>'; // Tambahkan ID ke elemen span
-        } else {
-            echo '—'; // Tampilkan tanda dash jika tidak ada nilai
-        }
-    }
-}
 
 
