@@ -9,7 +9,7 @@
  * that starts the plugin.
  *
  * @link              https://fundyourfx.com
- * @since             1.0.0
+ * @since             1.1.1
  * @package           Fyfx_Propfirm_User
  * GitHub Plugin URI: https://github.com/JMConsultingID/your-propfirm-addon
  * GitHub Branch: develop
