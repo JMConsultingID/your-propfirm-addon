@@ -634,8 +634,8 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
     
     // Menyimpan respons API sebagai metadata pesanan
-    update_post_meta($order_id, 'ypf_api_response_product-'.$products_loop_id,$api_response_test);
-    update_post_meta($order_id, 'ypf_api_response_programId-'.$products_loop_id,$program_id_value);
+    update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
+    update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
 }
 
 // Send API request using CURL
