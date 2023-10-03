@@ -653,7 +653,7 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     // Menyimpan respons API sebagai metadata pesanan
     update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
     update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
-    update_post_meta($order_id, 'api_response_mt_version', $mt_version_value);
+    update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
 }
 
 // Send API request using CURL
