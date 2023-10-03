@@ -539,7 +539,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 
         $mt_version_value = get_post_meta($order->get_id(), 'mt_version', true);
 
-        if (!empty($mt_version_value)) {
+        if (empty($mt_version_value)) {
             $mt_version_value = $default_mt;
         }
 
