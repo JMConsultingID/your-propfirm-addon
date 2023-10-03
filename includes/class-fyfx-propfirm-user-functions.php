@@ -558,6 +558,11 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 
         foreach ($products_with_program_id as $product) {
             $program_id = get_post_meta($product->get_id(), '_program_id', true);
+            $sku_product = $product->get_sku();
+
+            if (!empty($program_id)) {
+                $program_id_value = $program_id;
+            }
 
             // Use the first product to send to endpoint_url_1
             if (!$first_product) {
