@@ -537,7 +537,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $first_product = null;
         $products_loop_id = 1; // Inisialisasi id
 
-        $mt_version_value = get_post_meta($order_id, 'mt_version', true) ?: 'MT4';
+        $mt_version_value = get_post_meta($order_id, 'mt_version', true) ?: $default_mt;
 
         $program_id_value = '';
         foreach ($items as $item) {
@@ -584,7 +584,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
-                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id );
+                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $mt_version_value );
                 }
             }
             $products_loop_id++;
