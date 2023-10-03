@@ -581,7 +581,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             } else {
                 if ($user_id) {
                     $api_data_account = array(
-                        'mtVersion' => get_post_meta($product->get_id(), 'mtVersion', true),
+                        'mtVersion' => $mt_version_value,
                         'programId' => $program_id_value
                     );
                     $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
