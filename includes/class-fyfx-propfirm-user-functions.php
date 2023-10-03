@@ -547,10 +547,6 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 
             if (!empty($program_id)) {
                 $program_id_value = $program_id;
-            } elseif (!empty($sku_product)) {
-                $program_id_value = $sku_product;
-            } else {
-                $program_id_value = '000-000';
             }
 
             // Use the first product to send to endpoint_url_1
