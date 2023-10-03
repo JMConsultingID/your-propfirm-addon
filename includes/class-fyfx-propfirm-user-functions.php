@@ -543,26 +543,20 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             $mt_version_value = $default_mt;
         }
 
-        // Check if any product has _program_id set
-        $has_program_id = false;
+        // Identify products with _program_id
+        $products_with_program_id = array();
 
-        // Loop through order items to check if _program_id is set
+        // First loop to identify products with _program_id
         foreach ($items as $item) {
             $product = $item->get_product();
             $program_id = get_post_meta($product->get_id(), '_program_id', true);
+
             if (!empty($program_id)) {
-                $has_program_id = true;
-                break;
+                $products_with_program_id[] = $product;
             }
         }
 
-        // If _program_id is not set in any product, exit early
-        if (!$has_program_id) {
-            return;
-        }
-        
-        foreach ($items as $item) {
-            $product = $item->get_product();
+        foreach ($products_with_program_id as $product) {
             $program_id = get_post_meta($product->get_id(), '_program_id', true);
             $sku_product = $product->get_sku();
 
