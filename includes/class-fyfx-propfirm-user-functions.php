@@ -481,6 +481,23 @@ function display_custom_field_after_billing_form() {
 }
 add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_after_billing_form');
 
+function update_post_meta_on_order_creation($order_id) {
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+    $mt_version = $_POST['mt_version'];
+        if (!empty($mt_version)){
+            $mt_version_value = $mt_version;
+        }
+        else{
+            if (!empty($default_mt)){
+                $mt_version_value = $default_mt;
+            }
+            else{
+                $mt_version_value = 'MT4';
+            }
+        }
+    update_post_meta($order_id, 'mt_version', $mt_version_value);
+}
+add_action('woocommerce_new_order', 'update_post_meta_on_order_creation');
 
 // Create user via API when successful payment is made
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
@@ -520,18 +537,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $first_product = null;
         $products_loop_id = 1; // Inisialisasi id
 
-        $mt_version = $_POST['mt_version'];
-        if (!empty($mt_version)){
-            $mt_version_value = $mt_version;
-        }
-        else{
-            if (!empty($default_mt)){
-                $mt_version_value = $default_mt;
-            }
-            else{
-                $mt_version_value = 'MT4';
-            }
-        }
+        $mt_version_value = get_post_meta($order->get_id(), 'mt_version', true);
 
         $program_id_value = '';
         foreach ($items as $item) {
