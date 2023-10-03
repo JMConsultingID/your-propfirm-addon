@@ -502,8 +502,7 @@ add_action('woocommerce_new_order', 'update_post_meta_on_order_creation');
 // Create user via API when successful payment is made
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
     // Retrieve endpoint URL and API Key from plugin settings
-    $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');  
-    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');  
+    $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');    
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -538,11 +537,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $first_product = null;
         $products_loop_id = 1; // Inisialisasi id
 
-        $mt_version_value = get_post_meta($order->get_id(), 'mt_version', true);
-
-        if (empty($mt_version_value)) {
-            $mt_version_value = $default_mt;
-        }
+        $mt_version_value = get_post_meta($order_id, 'mt_version', true) ?: 'MT4';
 
         $program_id_value = '';
         foreach ($items as $item) {
