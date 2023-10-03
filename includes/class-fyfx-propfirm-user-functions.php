@@ -537,7 +537,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $first_product = null;
         $products_loop_id = 1; // Inisialisasi id
 
-        $mt_version_value = get_post_meta($order->get_id(), 'mt_version', true);
+        $mt_version_value = get_post_meta($order_id, 'mt_version', true) ?: 'MT4';
 
         $program_id_value = '';
         foreach ($items as $item) {
