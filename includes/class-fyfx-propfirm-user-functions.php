@@ -857,7 +857,7 @@ function add_program_id_combination_column_to_admin_products($columns) {
 
     return $new_columns;
 }
-add_filter('manage_edit-product_columns', 'add_program_id_combination_column_to_admin_products', 20);
+add_filter('manage_edit-product_columns', 'add_program_id_combination_column_to_admin_products', 21);
 
 // Menampilkan nilai dari custom field "_program_id" di kolom "Program ID"
 function display_program_id_in_admin_products($column, $post_id) {
