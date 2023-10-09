@@ -882,7 +882,7 @@ function display_program_id_combination_in_admin_products($column, $post_id) {
         }
     }
 }
-add_action('manage_product_posts_custom_column', 'display_program_id_combination_in_admin_products', 10, 2);
+add_action('manage_product_posts_custom_column', 'display_program_id_combination_in_admin_products', 10, 3);
 
 function your_propfirm_save_quick_edit_data($product_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
