@@ -580,67 +580,53 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
             $mt_version_value = $default_mt;
         }
 
-        // Identify products with _program_id
-        $products_with_program_id = array();
 
-        // First loop to identify products with _program_id
-        foreach ($items as $item) {
-            $product = $item->get_product();
-            $program_id = get_post_meta($product->get_id(), '_program_id', true);
+        $program_id = get_post_meta($order->get_id(), 'data_program_id', true);
+        $program_id_product = get_post_meta($product->get_id(), '_program_id', true);
 
-            if (!empty($program_id)) {
-                $products_with_program_id[] = $product;
-            }
+        if (!empty($program_id)) {
+            $program_id_value = $program_id;
         }
 
-        foreach ($products_with_program_id as $product) {
-            $program_id = get_post_meta($product->get_id(), '_program_id', true);
-            $sku_product = $product->get_sku();
-
-            if (!empty($program_id)) {
-                $program_id_value = $program_id;
+        // Use the first product to send to endpoint_url_1
+        if (!$first_product) {
+            $first_product = $product;
+            $api_data = get_api_data($order, $program_id_value, $mt_version_value);
+            // Send the API request
+            if ($request_method === 'curl') {
+                $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
+                $http_status = $response['http_status'];
+                $api_response = $response['api_response'];
+            } else {
+                $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data);
+                $http_status = $response['http_status'];
+                $api_response = $response['api_response'];
             }
+            handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
 
-            // Use the first product to send to endpoint_url_1
-            if (!$first_product) {
-                $first_product = $product;
-                $api_data = get_api_data($order, $program_id_value, $mt_version_value);
-                // Send the API request
+            // Get the user ID from the response
+            $user_data = json_decode($response['api_response'], true);
+            $user_id = isset($user_data['id']) ? $user_data['id'] : null;
+        } else {
+            if ($user_id) {
+                $api_data_account = array(
+                    'mtVersion' => $mt_version_value,
+                    'programId' => $program_id_value
+                );
+                $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
                 if ($request_method === 'curl') {
-                    $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data);
+                    $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url_2, $api_key, $api_data_account);
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 } else {
-                    $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data);
+                    $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data_account);
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 }
                 handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
-
-                // Get the user ID from the response
-                $user_data = json_decode($response['api_response'], true);
-                $user_id = isset($user_data['id']) ? $user_data['id'] : null;
-            } else {
-                if ($user_id) {
-                    $api_data_account = array(
-                        'mtVersion' => $mt_version_value,
-                        'programId' => $program_id_value
-                    );
-                    $endpoint_url_2 = $endpoint_url.'/'.$user_id.'/accounts';
-                    if ($request_method === 'curl') {
-                        $response = ypf_your_propfirm_plugin_send_curl_request($endpoint_url_2, $api_key, $api_data_account);
-                        $http_status = $response['http_status'];
-                        $api_response = $response['api_response'];
-                    } else {
-                        $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data_account);
-                        $http_status = $response['http_status'];
-                        $api_response = $response['api_response'];
-                    }
-                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
-                }
             }
-            $products_loop_id++;
         }
+        $products_loop_id++;
     }
 }
 add_action('woocommerce_order_status_changed', 'send_api_on_order_status_change', 10, 4);
