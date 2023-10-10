@@ -582,7 +582,6 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
 
 
         $program_id = get_post_meta($order->get_id(), 'data_program_id', true);
-        $program_id_product = get_post_meta($product->get_id(), '_program_id', true);
 
         if (!empty($program_id)) {
             $program_id_value = $program_id;
