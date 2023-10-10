@@ -499,39 +499,6 @@ function update_post_meta_on_order_creation($order_id) {
 }
 add_action('woocommerce_new_order', 'update_post_meta_on_order_creation');
 
-function update_post_meta_program_id_on_order_creation($order_id) {
-    // Get the order object
-    $order = wc_get_order($order_id);
-
-    // Initialize the value
-    $data_program_id_value = '';
-
-    // Check if fastCheckoutProductID input is set and not empty
-    if (isset($_POST['fastCheckoutProgramID']) && !empty($_POST['fastCheckoutProgramID'])) {
-        $data_program_id_value = sanitize_text_field($_POST['fastCheckoutProgramID']);
-    } else {
-        // Get items from the order
-        $items = $order->get_items();
-
-        // If there are items in the order
-        if ($items) {
-            // Get the first product in the order
-            $first_item = reset($items);
-            $product_id = $first_item->get_product_id();
-
-            $program_id = get_post_meta($product_id, '_program_id', true);
-
-            if (!empty($program_id)) {
-                $data_program_id_value = $program_id;
-            }
-        }
-    }
-
-    update_post_meta($order_id, 'data_program_id', $data_program_id_value);
-}
-
-add_action('woocommerce_new_order', 'update_post_meta_program_id_on_order_creation');
-
 
 // Create user via API when successful payment is made
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
