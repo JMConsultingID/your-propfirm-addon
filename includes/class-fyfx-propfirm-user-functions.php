@@ -527,10 +527,7 @@ function update_post_meta_program_id_on_order_creation($order_id) {
         }
     }
 
-    // Now, update the order meta with the determined value
-    if (!empty($data_program_id_value)) {
-        update_post_meta($order_id, 'data_program_id', $data_program_id_value);
-    }
+    update_post_meta($order_id, 'data_program_id', $data_program_id_value);
 }
 
 add_action('woocommerce_new_order', 'update_post_meta_program_id_on_order_creation');
