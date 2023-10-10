@@ -874,7 +874,7 @@ function add_program_id_combination_column_to_admin_products($columns) {
 
         // Menambahkan kolom setelah kolom "SKU"
         if ('program_id' === $key) {
-            $new_columns['program_id_combination'] = __('YPF-ID-Com', 'woocommerce');
+            $new_columns['program_id_combination'] = __('YPF-ID-ULMTD', 'woocommerce');
         }
     }
 
