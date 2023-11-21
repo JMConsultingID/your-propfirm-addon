@@ -483,7 +483,8 @@ add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_afte
 
 function update_post_meta_on_order_creation($order_id) {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
-    $mt_version = $_POST['mt_version'];
+    //$mt_version = $_POST['mt_version'];
+    $mt_version = isset($_POST['mt_version']) ? $_POST['mt_version'] : '';
         if (!empty($mt_version)){
             $mt_version_value = $mt_version;
         }
