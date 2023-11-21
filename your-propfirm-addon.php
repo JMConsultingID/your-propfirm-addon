@@ -8,18 +8,18 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://fundyourfx.com
- * @since             1.1.3
+ * @link              https://yourpropfirm.com
+ * @since             1.0.1
  * @package           Fyfx_Propfirm_User
  * GitHub Plugin URI: https://github.com/JMConsultingID/your-propfirm-addon
  * GitHub Branch: develop
  * @wordpress-plugin
  * Plugin Name:       Add On YourPropfirm User
- * Plugin URI:        https://fundyourfx.com
+ * Plugin URI:        https://yourpropfirm.com
  * Description:       This Plugin to Create User or Account to Dashboard YourPropfirm
- * Version:           1.0.5
+ * Version:           1.1.5
  * Author:            Ardi JM Consulting
- * Author URI:        https://fundyourfx.com
+ * Author URI:        https://yourpropfirm.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       fyfx-propfirm-user
