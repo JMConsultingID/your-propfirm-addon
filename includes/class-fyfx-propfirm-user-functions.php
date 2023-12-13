@@ -3,8 +3,8 @@
 function fyfx_your_propfirm_plugin_settings_page() {
     add_submenu_page(
         'woocommerce',
-        'Add On Your Propfirm',
-        'Add On Your Propfirm',
+        'YPF Connection Settings',
+        'YPF Connection Settings',
         'manage_options',
         'fyfx_your_propfirm_plugin',
         'fyfx_your_propfirm_plugin_settings_page_content'
