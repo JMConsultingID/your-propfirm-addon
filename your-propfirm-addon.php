@@ -17,7 +17,7 @@
  * Plugin Name:       Add On YourPropfirm User
  * Plugin URI:        https://yourpropfirm.com
  * Description:       This Plugin to Create User or Account to Dashboard YourPropfirm
- * Version:           1.1.5
+ * Version:           1.1.5.1
  * Author:            Ardi JM Consulting
  * Author URI:        https://yourpropfirm.com
  * License:           GPL-2.0+
