@@ -8,18 +8,18 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://fundyourfx.com
- * @since             1.0.0
+ * @link              https://yourpropfirm.com
+ * @since             1.0.1
  * @package           Fyfx_Propfirm_User
  * GitHub Plugin URI: https://github.com/JMConsultingID/your-propfirm-addon
  * GitHub Branch: develop
  * @wordpress-plugin
  * Plugin Name:       Add On YourPropfirm User
- * Plugin URI:        https://fundyourfx.com
+ * Plugin URI:        https://yourpropfirm.com
  * Description:       This Plugin to Create User or Account to Dashboard YourPropfirm
- * Version:           1.0.0
+ * Version:           1.1.5.1
  * Author:            Ardi JM Consulting
- * Author URI:        https://fundyourfx.com
+ * Author URI:        https://yourpropfirm.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       fyfx-propfirm-user
@@ -36,7 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'FYFX_PROPFIRM_USER_VERSION', '1.0.0' );
+define( 'FYFX_PROPFIRM_USER_VERSION', '1.0.5' );
 
 /**
  * The code that runs during plugin activation.

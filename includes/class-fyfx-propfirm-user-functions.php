@@ -3,8 +3,8 @@
 function fyfx_your_propfirm_plugin_settings_page() {
     add_submenu_page(
         'woocommerce',
-        'Add On Your Propfirm',
-        'Add On Your Propfirm',
+        'YPF Connection Settings',
+        'YPF Connection Settings',
         'manage_options',
         'fyfx_your_propfirm_plugin',
         'fyfx_your_propfirm_plugin_settings_page_content'
@@ -481,6 +481,24 @@ function display_custom_field_after_billing_form() {
 }
 add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_after_billing_form');
 
+function update_post_meta_on_order_creation($order_id) {
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+    //$mt_version = $_POST['mt_version'];
+    $mt_version = isset($_POST['mt_version']) ? $_POST['mt_version'] : '';
+        if (!empty($mt_version)){
+            $mt_version_value = $mt_version;
+        }
+        else{
+            if (!empty($default_mt)){
+                $mt_version_value = $default_mt;
+            }
+            else{
+                $mt_version_value = 'MT4';
+            }
+        }
+    update_post_meta($order_id, 'mt_version', $mt_version_value);
+}
+add_action('woocommerce_new_order', 'update_post_meta_on_order_creation');
 
 // Create user via API when successful payment is made
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
@@ -520,31 +538,31 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         $first_product = null;
         $products_loop_id = 1; // Inisialisasi id
 
-        $mt_version = $_POST['mt_version'];
-        if (!empty($mt_version)){
-            $mt_version_value = $mt_version;
+        $mt_version_value = get_post_meta($order->get_id(), 'mt_version', true);
+
+        if (empty($mt_version_value)) {
+            $mt_version_value = $default_mt;
         }
-        else{
-            if (!empty($default_mt)){
-                $mt_version_value = $default_mt;
-            }
-            else{
-                $mt_version_value = 'MT4';
+
+        // Identify products with _program_id
+        $products_with_program_id = array();
+
+        // First loop to identify products with _program_id
+        foreach ($items as $item) {
+            $product = $item->get_product();
+            $program_id = get_post_meta($product->get_id(), '_program_id', true);
+
+            if (!empty($program_id)) {
+                $products_with_program_id[] = $product;
             }
         }
 
-        $program_id_value = '';
-        foreach ($items as $item) {
-            $product = $item->get_product();
+        foreach ($products_with_program_id as $product) {
             $program_id = get_post_meta($product->get_id(), '_program_id', true);
             $sku_product = $product->get_sku();
 
             if (!empty($program_id)) {
                 $program_id_value = $program_id;
-            } elseif (!empty($sku_product)) {
-                $program_id_value = $sku_product;
-            } else {
-                $program_id_value = '000-000';
             }
 
             // Use the first product to send to endpoint_url_1
@@ -561,7 +579,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 }
-                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id );
+                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
 
                 // Get the user ID from the response
                 $user_data = json_decode($response['api_response'], true);
@@ -582,7 +600,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
-                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id );
+                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
                 }
             }
             $products_loop_id++;
@@ -615,7 +633,7 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
     );
 }
 
-function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id) {
+function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
         // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
@@ -634,7 +652,9 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
     
     // Menyimpan respons API sebagai metadata pesanan
-    update_post_meta($order_id, 'api_response-'.$products_loop_id,$api_response_test);
+    update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
+    update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
+    update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
 }
 
 // Send API request using CURL
@@ -801,10 +821,42 @@ function display_program_id_in_admin_products($column, $post_id) {
     if ('program_id' === $column) {
         $program_id = get_post_meta($post_id, '_program_id', true);
         if ($program_id) {
-            echo esc_html($program_id);
+            echo '<span id="program_id-' . $post_id . '">' . esc_html($program_id) . '</span>'; // Tambahkan ID ke elemen span
         } else {
             echo '—'; // Tampilkan tanda dash jika tidak ada nilai
         }
     }
 }
 add_action('manage_product_posts_custom_column', 'display_program_id_in_admin_products', 10, 2);
+
+function your_propfirm_save_quick_edit_data($product_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return $product_id;
+
+    // Jika ini adalah permintaan dari Quick Edit
+    if (isset($_POST['_inline_edit']) && wp_verify_nonce($_POST['_inline_edit'], 'inlineeditnonce')) {
+        if (isset($_POST['_program_id'])) {
+            update_post_meta($product_id, '_program_id', sanitize_text_field($_POST['_program_id']));
+        }
+    }
+
+    return $product_id;
+}
+add_action('save_post_product', 'your_propfirm_save_quick_edit_data');
+
+function add_program_id_quick_edit_field($column_name, $post_type) {
+    if ($column_name != 'program_id' || $post_type != 'product') return;
+
+    // Output custom field
+    echo '<fieldset class="inline-edit-col-left">
+            <div class="inline-edit-col">
+                <label class="alignleft">
+                    <span class="title">' . __('YPF-ID', 'woocommerce') . '</span>
+                    <span class="input-text-wrap">
+                        <input type="text" name="_program_id" class="ptitle" value="" />
+                    </span>
+                </label>
+            </div>
+        </fieldset>';
+}
+add_action('quick_edit_custom_box', 'add_program_id_quick_edit_field', 10, 2);
