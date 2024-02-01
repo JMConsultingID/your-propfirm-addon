@@ -414,7 +414,7 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
         $fields['billing']['mt_version'] = array(
             'type' => 'select',
             'label' => 'MetaTrader Version',
-            'options' => $options // Use the conditional options here
+            'options' => $options, // Use the conditional options here
             'required' => true,
             'class' => array('form-row-wide'),
             'clear' => true
