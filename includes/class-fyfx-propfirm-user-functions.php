@@ -390,8 +390,6 @@ function fyfx_your_propfirm_plugin_general_section_callback() {
 // add_filter('sellkit_checkout_billing_fields', 'add_custom_checkout_field');
 
 
-// Pastikan script ini ditempatkan dalam file functions.php tema aktif Anda di WordPress
-
 // Add custom field to checkout page
 function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
@@ -401,14 +399,22 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     $checkout_form = get_option('fyfx_your_propfirm_plugin_checkout_form');
     $mt_version_field = get_option('fyfx_your_propfirm_plugin_mt_version_field');
 
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+
+    // Determine the options order based on $default_mt
+    $options = $default_mt === 'MT5' ? array(
+        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+    ) : array(
+        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+        'MT5' => __('MetaTrader Version 5', 'woocommerce')
+    );
+
     if ($checkout_form === 'woocommerce_form' && $mt_version_field !== 'disable') {
         $fields['billing']['mt_version'] = array(
             'type' => 'select',
             'label' => 'MetaTrader Version',
-            'options' => array(
-                'MT4' => 'MetaTrader Version 4',
-                'MT5' => 'MetaTrader Version 5'
-            ),
+            'options' => $options // Use the conditional options here
             'required' => true,
             'class' => array('form-row-wide'),
             'clear' => true
@@ -419,7 +425,6 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
 }
 add_filter('woocommerce_checkout_fields', 'fyfx_your_propfirm_plugin_add_custom_field');
 
-// Fungsi untuk menampilkan select option MT Version setelah hook woocommerce_before_checkout_shipping_form
 function display_custom_field_after_shipping_form() {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -428,6 +433,17 @@ function display_custom_field_after_shipping_form() {
     $checkout_form = get_option('fyfx_your_propfirm_plugin_checkout_form');
     $sellkit_option = get_option('fyfx_your_propfirm_plugin_sellkit_option');
     $mt_version_field = get_option('fyfx_your_propfirm_plugin_mt_version_field');
+
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+
+    // Determine the options order based on $default_mt
+    $options = $default_mt === 'MT5' ? array(
+        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+    ) : array(
+        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+        'MT5' => __('MetaTrader Version 5', 'woocommerce')
+    );
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_shipping' && $mt_version_field !== 'disable') {
         ?>
@@ -438,10 +454,7 @@ function display_custom_field_after_shipping_form() {
                 'class' => array('form-row-wide'),
                 'label' => __('MetaTrader Version', 'woocommerce'),
                 'required' => true,
-                'options' => array(
-                    'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-                    'MT5' => __('MetaTrader Version 5', 'woocommerce')
-                )
+                'options' => $options // Use the conditional options here
             ), '');
             ?>
         </div>
@@ -450,7 +463,6 @@ function display_custom_field_after_shipping_form() {
 }
 add_action('woocommerce_after_checkout_shipping_form', 'display_custom_field_after_shipping_form');
 
-// Fungsi untuk menampilkan select option MT Version setelah hook woocommerce_before_checkout_billing_form
 function display_custom_field_after_billing_form() {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -459,6 +471,16 @@ function display_custom_field_after_billing_form() {
     $checkout_form = get_option('fyfx_your_propfirm_plugin_checkout_form');
     $sellkit_option = get_option('fyfx_your_propfirm_plugin_sellkit_option');
     $mt_version_field = get_option('fyfx_your_propfirm_plugin_mt_version_field');
+    $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
+
+    // Determine the options order based on $default_mt
+    $options = $default_mt === 'MT5' ? array(
+        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+    ) : array(
+        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+        'MT5' => __('MetaTrader Version 5', 'woocommerce')
+    );
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_billing' && $mt_version_field !== 'disable') {
         ?>
@@ -469,10 +491,7 @@ function display_custom_field_after_billing_form() {
                 'class' => array('form-row-wide'),
                 'label' => __('MetaTrader Version', 'woocommerce'),
                 'required' => true,
-                'options' => array(
-                    'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-                    'MT5' => __('MetaTrader Version 5', 'woocommerce')
-                )
+                'options' => $options // Use the conditional options here
             ), '');
             ?>
         </div>
@@ -480,6 +499,7 @@ function display_custom_field_after_billing_form() {
     }
 }
 add_action('woocommerce_after_checkout_billing_form', 'display_custom_field_after_billing_form');
+
 
 function update_post_meta_on_order_creation($order_id) {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
