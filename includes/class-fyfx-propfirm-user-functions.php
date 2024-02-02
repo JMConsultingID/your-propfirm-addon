@@ -499,38 +499,63 @@ function update_post_meta_on_order_creation($order_id) {
 }
 add_action('woocommerce_new_order', 'update_post_meta_on_order_creation');
 
-function update_post_meta_program_id_on_order_creation($order_id) {
-    // Get the order object
-    $order = wc_get_order($order_id);
+// function update_post_meta_program_id_on_order_creation($order_id) {
+//     $order = wc_get_order($order_id);
+//     $data_program_id_value = '';
+//     if (isset($_POST['fcprogram-id']) && !empty($_POST['fcprogram-id'])) {
+//         $data_program_id_value = sanitize_text_field($_POST['fcprogram-id']);
+//     } else {
+//         $items = $order->get_items();
+//         if ($items) {
+//             $first_item = reset($items);
+//             $product_id = $first_item->get_product_id();
+//             $program_id = get_post_meta($product_id, '_program_id', true);
+//             if (!empty($program_id)) {
+//                 $data_program_id_value = $program_id;
+//             }
+//         }
+//     }
+//     update_post_meta($order_id, 'data_program_id', $data_program_id_value);
+// }
+// add_action('woocommerce_new_order', 'update_post_meta_program_id_on_order_creation');
 
-    // Initialize the value
-    $data_program_id_value = '';
+add_action( 'woocommerce_checkout_create_order', 'update_post_meta_program_id_on_order_creation_from_cart', 20, 2 );
+function update_post_meta_program_id_on_order_creation_from_cart( $order, $data ) {
+    if ( ! is_a( $order, 'WC_Order' ) ) {
+        return;
+    }
 
-    // Check if fastCheckoutProductID input is set and not empty
-    if (isset($_POST['fcprogram-id']) && !empty($_POST['fcprogram-id'])) {
-        $data_program_id_value = sanitize_text_field($_POST['fcprogram-id']);
-    } else {
-        // Get items from the order
-        $items = $order->get_items();
+    global $woocommerce;
+    $cart = $woocommerce->cart;
 
-        // If there are items in the order
-        if ($items) {
-            // Get the first product in the order
-            $first_item = reset($items);
-            $product_id = $first_item->get_product_id();
+    $addon_product_3_in_cart = false;
 
-            $program_id = get_post_meta($product_id, '_program_id', true);
-
-            if (!empty($program_id)) {
-                $data_program_id_value = $program_id;
-            }
+    // Cek untuk Add-On Product 3 di keranjang
+    foreach ( $cart->get_cart() as $cart_item ) {
+        if ( $cart_item['product_id'] == 232 ) {
+            $addon_product_3_in_cart = true;
+            break;
         }
     }
 
-    update_post_meta($order_id, 'data_program_id', $data_program_id_value);
-}
+    foreach ( $order->get_items() as $item ) {
+        $product_id = $item->get_product_id();
+        $product = wc_get_product($product_id);
 
-add_action('woocommerce_new_order', 'update_post_meta_program_id_on_order_creation');
+        if ( $product && ! empty( $product->get_meta('_program_id') ) && ! empty( $product->get_meta('_program_id_combination') ) ) {
+            
+            $program_id = get_post_meta($product->get_id(), '_program_id', true);
+
+            if ( $addon_product_3_in_cart ) {
+                $order->update_meta_data( 'program_id', $product->get_meta('_program_id_combination') );
+            } else {
+                if ( ! empty( $program_id ) ) {
+                    $order->update_meta_data( 'program_id', $program_id );
+                }
+            }
+        }
+    }
+}
 
 
 // Create user via API when successful payment is made
