@@ -674,36 +674,6 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     $order->save(); // Don't forget to save the order to store these meta data
 }
 
-add_action('woocommerce_admin_order_data_after_billing_address', 'display_api_response_in_order_admin', 10, 1);
-
-function display_api_response_in_order_admin($order) {
-    // Get all items from the order
-    $order_items = $order->get_items();
-
-    // Loop through each item
-    foreach ($order_items as $item_id => $item) {
-        // The loop ID could be derived from the product ID or a custom field/meta data.
-        // For example, if you have stored a loop ID as meta data:
-        $products_loop_id = $item->get_meta('products_loop_id');
-
-        // Now, retrieve the API response using the loop ID
-        $api_response_test = $order->get_meta('api_response_ypf_product-' . $products_loop_id);
-        $program_id_value = $order->get_meta('api_response_ypf_programId-' . $products_loop_id);
-        $mt_version_value = $order->get_meta('api_response_mt_version-' . $products_loop_id);
-
-        // Check if the API response is not empty and display it
-        if (!empty($api_response_test)) {
-            echo '<p><strong>Product ID:</strong> ' . esc_html($item->get_product_id()) . '<br />';
-            echo '<strong>API Response:</strong> ' . esc_html($api_response_test) . '<br />';
-            echo '<strong>Program ID:</strong> ' . esc_html($program_id_value) . '<br />';
-            echo '<strong>MT Version:</strong> ' . esc_html($mt_version_value) . '</p>';
-        } else {
-            // Error text to display if the API response is empty
-            echo '<p><strong>Error:</strong> No API response for Product ID ' . esc_html($item->get_product_id()) . '.</p>';
-        }
-    }
-}
-
 // Send API request using CURL
 function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
     $api_url = $endpoint_url;
