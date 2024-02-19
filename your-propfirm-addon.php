@@ -17,7 +17,7 @@
  * Plugin Name:       Add On YourPropfirm User
  * Plugin URI:        https://yourpropfirm.com
  * Description:       This Plugin to Create User or Account to Dashboard YourPropfirm
- * Version:           1.1.5.5
+ * Version:           1.1.5.6
  * Author:            Ardi JM Consulting
  * Author URI:        https://yourpropfirm.com
  * License:           GPL-2.0+
@@ -36,7 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'FYFX_PROPFIRM_USER_VERSION', '1.1.5.5' );
+define( 'FYFX_PROPFIRM_USER_VERSION', '1.1.5.6' );
 
 /**
  * The code that runs during plugin activation.
