@@ -644,13 +644,15 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 409.';
     } elseif ($http_status == 500) {
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 500.';
+    } else {
+        $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     }
 
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
     
-    // update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
-    // update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
-    // update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
+    update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
+    update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
+    update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
 
     // Combine all API responses into one note
     $combined_note = "API Responses for Product " . $products_loop_id . ":\n";
