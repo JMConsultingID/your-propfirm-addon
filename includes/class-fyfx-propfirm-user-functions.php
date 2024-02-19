@@ -635,7 +635,7 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
     );
 }
 
-function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id) {
+function handle_api_response_error($order, $http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
         $error_message = 'success';
