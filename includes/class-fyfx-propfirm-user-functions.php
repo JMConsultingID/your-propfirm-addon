@@ -371,25 +371,6 @@ function fyfx_your_propfirm_plugin_general_section_callback() {
     echo 'Configure the general settings for YourPropfirm User Plugin.';
 }
 
-// Fungsi untuk menambahkan bidang kustom ke dalam formulir checkout
-// function add_custom_checkout_field($fields) {
-//     $fields['billing']['mt_version'] = array(
-//         'type' => 'select',
-//         'label' => __('MT Version', 'woocommerce'),
-//         'required' => true,
-//         'class' => array('form-row-wide'),
-//         'options' => array(
-//             '' => __('Pilih MT Version', 'woocommerce'),
-//             'MT4' => __('MT Version 4', 'woocommerce'),
-//             'MT5' => __('MT Version 5', 'woocommerce')
-//         )
-//     );
-
-//     return $fields;
-// }
-// add_filter('sellkit_checkout_billing_fields', 'add_custom_checkout_field');
-
-
 // Add custom field to checkout page
 function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
@@ -656,16 +637,12 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
 function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
-        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
         $error_message = 'success';
     } elseif ($http_status == 400) {
-        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 400)
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 400.';
     } elseif ($http_status == 409) {
-        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 409)
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 409.';
     } elseif ($http_status == 500) {
-        // Jika terjadi kesalahan saat membuat pengguna (kode respons: 500)
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 500.';
     }
 
@@ -679,7 +656,6 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
 
 // Send API request using CURL
 function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $api_data) {
-     // Mengirim data ke API menggunakan cURL
     $api_url = $endpoint_url;
     $headers = array(
         'Accept: application/json',
@@ -704,7 +680,6 @@ function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $ap
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_close($ch);
 
-    // Menggunakan respons dari API jika diperlukan
     $api_response = substr($response, $header_size);
 
     return array(
@@ -714,7 +689,6 @@ function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $ap
 }
 
 function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data) {
-    // Mengirim data ke API menggunakan WP_REMOTE_POST
     $api_url = $endpoint_url;
     $headers = array(
         'Accept' => 'application/json',
@@ -819,14 +793,12 @@ function your_propfirm_addon_save_program_id_field($product_id) {
 }
 add_action('woocommerce_process_product_meta', 'your_propfirm_addon_save_program_id_field');
 
-// Menambahkan kolom "Program ID" ke daftar produk di halaman admin
 function add_program_id_column_to_admin_products($columns) {
     $new_columns = array();
 
     foreach ($columns as $key => $name) {
         $new_columns[$key] = $name;
 
-        // Menambahkan kolom setelah kolom "SKU"
         if ('sku' === $key) {
             $new_columns['program_id'] = __('YPF-ID', 'woocommerce');
         }
@@ -843,7 +815,7 @@ function display_program_id_in_admin_products($column, $post_id) {
         if ($program_id) {
             echo '<span id="program_id-' . $post_id . '">' . esc_html($program_id) . '</span>'; // Tambahkan ID ke elemen span
         } else {
-            echo '—'; // Tampilkan tanda dash jika tidak ada nilai
+            echo '—';
         }
     }
 }
