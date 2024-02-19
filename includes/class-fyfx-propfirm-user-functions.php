@@ -664,9 +664,6 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     // Add the combined note
     $order->add_order_note($combined_note);
 
-    // Save the order
-    $order->save();
-
     // Using WooCommerce methods to store the API response in the order meta
     $order->update_meta_data('api_response_ypf_product-'.$products_loop_id, $api_response_test);
     $order->update_meta_data('api_response_ypf_programId-'.$products_loop_id, $program_id_value);
