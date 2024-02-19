@@ -561,6 +561,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
         foreach ($products_with_program_id as $product) {
             $program_id = get_post_meta($product->get_id(), '_program_id', true);
             $sku_product = $product->get_sku();
+            $product_woo_id = $product->get_product_id();
 
             if (!empty($program_id)) {
                 $program_id_value = $program_id;
@@ -580,7 +581,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 }
-                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
+                handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id );
 
                 // Get the user ID from the response
                 $user_data = json_decode($response['api_response'], true);
@@ -601,7 +602,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
-                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value );
+                    handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id );
                 }
             }
             $products_loop_id++;
@@ -634,7 +635,7 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
     );
 }
 
-function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value) {
+function handle_api_response_error($http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id) {
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
         $error_message = 'success';
@@ -645,7 +646,7 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     } elseif ($http_status == 500) {
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 500.';
     } else {
-        $error_message = 'An error occurred while creating the user. Error Type Unknown.';
+        $error_message = 'No API response for Product ID : '. $product_woo_id;
     }
 
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
