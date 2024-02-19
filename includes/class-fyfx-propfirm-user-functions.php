@@ -651,9 +651,9 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
 
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
     
-    update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
-    update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
-    update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
+    //update_post_meta($order_id, 'api_response_ypf_product-'.$products_loop_id,$api_response_test);
+    //update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
+    //update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
 
     // Combine all API responses into one note
     // $combined_note = "API Responses for Product " . $products_loop_id . ":\n";
@@ -665,7 +665,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     // $order->add_order_note($combined_note);
 
     // Combine all API responses into one note
-    $combined_notes = "API Responses for Product ID : " . $products_loop_id . ":\n";
+    $combined_notes = "YPF API Response : " . $products_loop_id . ":\n";
     $combined_notes .= "Response: " . $api_response_test . "\n";
     $combined_notes .= "Program ID: " . $program_id_value . "\n";
     $combined_notes .= "MT Version: " . $mt_version_value . "\n";
@@ -675,9 +675,9 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     wc_create_order_note($order_id, $combined_notes, $added_by_user = false, $customer_note = false);
 
     // Using WooCommerce methods to store the API response in the order meta
-    $order->update_meta_data('api_response_ypf_product-'.$products_loop_id, $api_response_test);
-    $order->update_meta_data('api_response_ypf_programId-'.$products_loop_id, $program_id_value);
-    $order->update_meta_data('api_response_mt_version-'.$products_loop_id, $mt_version_value);
+    //$order->update_meta_data('api_response_ypf_product-'.$products_loop_id, $api_response_test);
+    //$order->update_meta_data('api_response_ypf_programId-'.$products_loop_id, $program_id_value);
+    //$order->update_meta_data('api_response_mt_version-'.$products_loop_id, $mt_version_value);
     $order->save(); // Don't forget to save the order to store these meta data
 }
 
