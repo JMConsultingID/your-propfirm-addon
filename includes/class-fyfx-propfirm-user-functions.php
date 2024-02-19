@@ -652,6 +652,15 @@ function handle_api_response_error($http_status, $api_response, $order_id, $prog
     // update_post_meta($order_id, 'api_response_ypf_programId-'.$products_loop_id,$program_id_value);
     // update_post_meta($order_id, 'api_response_mt_version-'.$products_loop_id, $mt_version_value);
 
+    // Combine all API responses into one note
+    $combined_note = "API Responses for Product " . $products_loop_id . ":\n";
+    $combined_note .= "Response: " . $api_response_test . "\n";
+    $combined_note .= "Program ID: " . $program_id_value . "\n";
+    $combined_note .= "MT Version: " . $mt_version_value . "\n";
+
+    // Add the combined note
+    wc_create_order_note($order_id, $combined_note, $added_by_user = false, $customer_note = false);
+
     // Using WooCommerce methods to store the API response in the order meta
     $order->update_meta_data('api_response_ypf_product-'.$products_loop_id, $api_response_test);
     $order->update_meta_data('api_response_ypf_programId-'.$products_loop_id, $program_id_value);
