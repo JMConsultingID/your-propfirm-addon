@@ -127,7 +127,7 @@ function fyfx_your_propfirm_plugin_settings_fields() {
 
     add_settings_field(
         'fyfx_your_propfirm_plugin_enable_response_header',
-        'Display Response Header in Console Log',
+        'Save Log Response',
         'fyfx_your_propfirm_plugin_enable_response_header_callback',
         'fyfx_your_propfirm_plugin_settings',
         'fyfx_your_propfirm_plugin_general'
@@ -636,6 +636,7 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
 }
 
 function handle_api_response_error($order, $http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id) {
+    $enable_response_header = get_option('fyfx_your_propfirm_plugin_enable_response_header');
     $log_data = ypf_connection_logger();
 
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
@@ -682,7 +683,10 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     //$order->update_meta_data('api_response_ypf_programId-'.$products_loop_id, $program_id_value);
     //$order->update_meta_data('api_response_mt_version-'.$products_loop_id, $mt_version_value);
     $order->save(); // Don't forget to save the order to store these meta data
-    $log_data['logger']->info($combined_notes,  $log_data['context']);
+
+    if ($enable_response_header){
+        $log_data['logger']->info($combined_notes,  $log_data['context']);
+    }
 }
 
 // Send API request using CURL
