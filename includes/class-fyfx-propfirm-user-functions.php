@@ -649,7 +649,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     } elseif ($http_status == 500) {
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 500.';
     } else {
-        $error_message = 'No API response for Product ID : '. $product_woo_id;
+        $error_message = 'Error API response!!';
     }
 
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
@@ -668,9 +668,10 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     // $order->add_order_note($combined_note);
 
     // Combine all API responses into one note
-    $combined_notes = "--Begin YPF Response--\n";
-    $combined_notes .= "API Response Loop : " . $products_loop_id . ":\n";
-    $combined_notes .= "Product ID : " . $product_woo_id . ":\n";    
+    $combined_notes = "YPF Dashboard\n";
+    $combined_notes .= "--Begin YPF Response--\n";
+    $combined_notes .= "API Response Loop : " . $products_loop_id . "\n";
+    $combined_notes .= "Product ID : " . $product_woo_id . "\n";    
     $combined_notes .= "Program ID: " . $program_id_value . "\n";
     $combined_notes .= "MT Version: " . $mt_version_value . "\n";
     $combined_notes .= "Response: " . $api_response_test . "\n";
