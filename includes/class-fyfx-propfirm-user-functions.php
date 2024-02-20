@@ -671,6 +671,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     $combined_notes = "YPF Dashboard\n";
     $combined_notes .= "--Begin YPF Response--\n";
     $combined_notes .= "API Response Loop : " . $products_loop_id . "\n";
+    $combined_notes .= "Order ID : " . $order_id . "\n";  
     $combined_notes .= "Product ID : " . $product_woo_id . "\n";    
     $combined_notes .= "Program ID: " . $program_id_value . "\n";
     $combined_notes .= "MT Version: " . $mt_version_value . "\n";
