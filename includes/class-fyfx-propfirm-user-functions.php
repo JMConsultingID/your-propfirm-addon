@@ -636,6 +636,8 @@ function get_api_data($order, $program_id_value, $mt_version_value) {
 }
 
 function handle_api_response_error($order, $http_status, $api_response, $order_id, $program_id_value, $products_loop_id, $mt_version_value, $product_woo_id) {
+    $log_data = ypf_connection_logger();
+
     $error_message = 'An error occurred while creating the user. Error Type Unknown.';
     if ($http_status == 201) {
         $error_message = 'success';
@@ -665,7 +667,8 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     // $order->add_order_note($combined_note);
 
     // Combine all API responses into one note
-    $combined_notes = "YPF API Response : " . $products_loop_id . ":\n";
+    $combined_notes = "--Begin YPF Response--\n";
+    $combined_notes .= "YPF API Response : " . $products_loop_id . ":\n";
     $combined_notes .= "Response: " . $api_response_test . "\n";
     $combined_notes .= "Program ID: " . $program_id_value . "\n";
     $combined_notes .= "MT Version: " . $mt_version_value . "\n";
@@ -679,6 +682,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     //$order->update_meta_data('api_response_ypf_programId-'.$products_loop_id, $program_id_value);
     //$order->update_meta_data('api_response_mt_version-'.$products_loop_id, $mt_version_value);
     $order->save(); // Don't forget to save the order to store these meta data
+    $log_data['logger']->info($combined_notes,  $log_data['context']);
 }
 
 // Send API request using CURL
@@ -740,15 +744,19 @@ function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $ap
         'http_status' => $http_status,
         'api_response' => $api_response
     );
-}   
+}
 
-// Menampilkan pemberitahuan pada halaman "Thank You"
+function ypf_connection_logger() {
+    $logger = wc_get_logger();
+    $context = array('source' => 'ypf_connection_log');
+    return array('logger' => $logger, 'context' => $context);
+}
+
 function display_order_notices() {
     wc_print_notices();
 }
 add_action('woocommerce_thankyou', 'display_order_notices');
 
-// Menambahkan data respons API ke halaman "Thank You"
 function add_api_response_js_to_thankyou_page() {
     // Display API response header in inspect element
     $checkout_form = get_option('fyfx_your_propfirm_plugin_checkout_form');
@@ -767,7 +775,7 @@ function add_api_response_js_to_thankyou_page() {
 }
 add_action('woocommerce_thankyou', 'add_api_response_js_to_thankyou_page');
 
-// Menambahkan data respons API ke halaman "Thank You"
+
 function add_api_response_js_to_sellkit_thankyou_page() {
     // Display API response header in inspect element
     $checkout_form = get_option('fyfx_your_propfirm_plugin_checkout_form');
@@ -835,12 +843,11 @@ function add_program_id_column_to_admin_products($columns) {
 }
 add_filter('manage_edit-product_columns', 'add_program_id_column_to_admin_products', 20);
 
-// Menampilkan nilai dari custom field "_program_id" di kolom "Program ID"
 function display_program_id_in_admin_products($column, $post_id) {
     if ('program_id' === $column) {
         $program_id = get_post_meta($post_id, '_program_id', true);
         if ($program_id) {
-            echo '<span id="program_id-' . $post_id . '">' . esc_html($program_id) . '</span>'; // Tambahkan ID ke elemen span
+            echo '<span id="program_id-' . $post_id . '">' . esc_html($program_id) . '</span>'; 
         } else {
             echo '—';
         }
@@ -852,7 +859,6 @@ function your_propfirm_save_quick_edit_data($product_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
         return $product_id;
 
-    // Jika ini adalah permintaan dari Quick Edit
     if (isset($_POST['_inline_edit']) && wp_verify_nonce($_POST['_inline_edit'], 'inlineeditnonce')) {
         if (isset($_POST['_program_id'])) {
             update_post_meta($product_id, '_program_id', sanitize_text_field($_POST['_program_id']));
