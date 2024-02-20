@@ -19,7 +19,7 @@
  * Description:       This Plugin to Create User or Account to Dashboard YourPropfirm
  * Version:           1.1.5.8
  * Author:            Ardi JM Consulting
- * Author URI:        https://yourpropfirm.com
+ * Author URI:        https://finpr.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       fyfx-propfirm-user
