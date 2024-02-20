@@ -668,8 +668,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     // $order->add_order_note($combined_note);
 
     // Combine all API responses into one note
-    $combined_notes = "\n";
-    $combined_notes .= "--Begin YPF Response--\n";
+    $combined_notes = "--Begin YPF Response--\n";
     $combined_notes .= "API Response Loop : " . $products_loop_id . ":\n";
     $combined_notes .= "Product ID : " . $product_woo_id . ":\n";    
     $combined_notes .= "Program ID: " . $program_id_value . "\n";
