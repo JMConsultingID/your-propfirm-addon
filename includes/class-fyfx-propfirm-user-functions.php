@@ -649,7 +649,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     } elseif ($http_status == 500) {
         $error_message = isset($api_response['error']) ? $api_response['error'] : 'An error occurred while creating the user. Error Type 500.';
     } else {
-        $error_message = 'Error API response!!';
+        $error_message = 'Error Response : An error occurred while creating the user. Error Type Unknown.!!';
     }
 
     $api_response_test = $error_message ." Code : ".$http_status ." Message : ".$api_response ;
@@ -668,15 +668,24 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     // $order->add_order_note($combined_note);
 
     // Combine all API responses into one note
-    $combined_notes = "YPF Dashboard\n";
-    $combined_notes .= "--Begin YPF Response--\n";
-    $combined_notes .= "API Response Loop : " . $products_loop_id . "\n";
-    $combined_notes .= "Order ID : " . $order_id . "\n";  
-    $combined_notes .= "Product ID : " . $product_woo_id . "\n";    
-    $combined_notes .= "Program ID: " . $program_id_value . "\n";
-    $combined_notes .= "MT Version: " . $mt_version_value . "\n";
+    $combined_notes = "--Begin YPF Response--\n";
+    $combined_notes .= "Response Loop : " . $products_loop_id . "\n";
+    $combined_notes .= "ProductID : " . $product_woo_id . "\n";    
+    $combined_notes .= "ProgramID: " . $program_id_value . "\n";
+    $combined_notes .= "MTVersion: " . $mt_version_value . "\n";
     $combined_notes .= "Response: " . $api_response_test . "\n";
     $combined_notes .= "--End Response--\n";
+
+    // Combine all API responses For Log WC-Logger
+    $combined_note_logs = "\n";
+    $combined_note_logs .= "--Begin YPF Response--\n";
+    $combined_note_logs .= "Response Loop : " . $products_loop_id . "\n";
+    $combined_note_logs .= "OrderID : " . $order_id . "\n";  
+    $combined_note_logs .= "ProductID : " . $product_woo_id . "\n";    
+    $combined_note_logs .= "ProgramID: " . $program_id_value . "\n";
+    $combined_note_logs .= "MTVersion: " . $mt_version_value . "\n";
+    $combined_note_logs .= "Response: " . $api_response_test . "\n";
+    $combined_note_logs .= "--End Response--\n";
 
     // Add the combined note
     wc_create_order_note($order_id, $combined_notes, $added_by_user = false, $customer_note = false);
@@ -688,7 +697,7 @@ function handle_api_response_error($order, $http_status, $api_response, $order_i
     $order->save(); // Don't forget to save the order to store these meta data
 
     if ($enable_response_header){
-        $log_data['logger']->info($combined_notes,  $log_data['context']);
+        $log_data['logger']->info($combined_note_logs,  $log_data['context']);
     }
 }
 
