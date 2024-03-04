@@ -193,7 +193,7 @@ function fyfx_your_propfirm_plugin_settings_fields() {
         'fyfx_your_propfirm_plugin_default_mt_version_field',
         array(
             'sanitize_callback' => 'sanitize_text_field',
-            'default' => 'MT4'
+            'default' => 'CTrader'
         )
     );
 
@@ -320,6 +320,7 @@ function fyfx_your_propfirm_plugin_default_mt_version_field_callback() {
     <select name="fyfx_your_propfirm_plugin_default_mt_version_field">
         <option value="MT4" <?php selected($default_mt, 'MT4'); ?>>MT4 Version</option>
         <option value="MT5" <?php selected($default_mt, 'MT5'); ?>>MT5 Version</option>
+        <option value="CTrader" <?php selected($default_mt, 'CTrader'); ?>>CTrader</option>
     </select>
     <?php
 }
@@ -386,9 +387,11 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     $options = $default_mt === 'MT5' ? array(
         'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+        'CTrader' => __('CTrader', 'woocommerce'),
     ) : array(
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'MT5' => __('MetaTrader Version 5', 'woocommerce')
+        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        'CTrader' => __('CTrader', 'woocommerce'),
     );
 
     if ($checkout_form === 'woocommerce_form' && $mt_version_field !== 'disable') {
@@ -421,9 +424,11 @@ function display_custom_field_after_shipping_form() {
     $options = $default_mt === 'MT5' ? array(
         'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+        'CTrader' => __('CTrader', 'woocommerce'),
     ) : array(
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'MT5' => __('MetaTrader Version 5', 'woocommerce')
+        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        'CTrader' => __('CTrader', 'woocommerce'),
     );
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_shipping' && $mt_version_field !== 'disable') {
@@ -458,9 +463,11 @@ function display_custom_field_after_billing_form() {
     $options = $default_mt === 'MT5' ? array(
         'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+        'CTrader' => __('CTrader', 'woocommerce'),
     ) : array(
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'MT5' => __('MetaTrader Version 5', 'woocommerce')
+        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        'CTrader' => __('CTrader', 'woocommerce'),
     );
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_billing' && $mt_version_field !== 'disable') {
@@ -494,7 +501,7 @@ function update_post_meta_on_order_creation($order_id) {
                 $mt_version_value = $default_mt;
             }
             else{
-                $mt_version_value = 'MT4';
+                $mt_version_value = 'CTrader';
             }
         }
     update_post_meta($order_id, 'mt_version', $mt_version_value);
