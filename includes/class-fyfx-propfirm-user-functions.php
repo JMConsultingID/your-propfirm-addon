@@ -127,7 +127,7 @@ function fyfx_your_propfirm_plugin_settings_fields() {
 
     add_settings_field(
         'fyfx_your_propfirm_plugin_request_delay',
-        'Sent Delay Request (for multiple product)',
+        'Delay Request (for multiple product)',
         'fyfx_your_propfirm_plugin_request_delay_callback',
         'fyfx_your_propfirm_plugin_settings',
         'fyfx_your_propfirm_plugin_general'
