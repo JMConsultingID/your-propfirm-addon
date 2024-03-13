@@ -126,6 +126,14 @@ function fyfx_your_propfirm_plugin_settings_fields() {
     );
 
     add_settings_field(
+        'fyfx_your_propfirm_plugin_request_delay',
+        'Sent Delay Request (for multiple product)',
+        'fyfx_your_propfirm_plugin_request_delay_callback',
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_general'
+    );
+
+    add_settings_field(
         'fyfx_your_propfirm_plugin_enable_response_header',
         'Save Log Response',
         'fyfx_your_propfirm_plugin_enable_response_header_callback',
@@ -212,6 +220,14 @@ function fyfx_your_propfirm_plugin_settings_fields() {
         array(
             'sanitize_callback' => 'sanitize_text_field',
             'default' => 'wp_remote_post'
+        )
+    );
+    register_setting(
+        'fyfx_your_propfirm_plugin_settings',
+        'fyfx_your_propfirm_plugin_request_delay',
+        array(
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '0'
         )
     );
 
@@ -348,6 +364,23 @@ function fyfx_your_propfirm_plugin_request_method_callback() {
     <select name="fyfx_your_propfirm_plugin_request_method">
         <option value="curl" <?php selected($request_method, 'curl'); ?>>CURL</option>
         <option value="wp_remote_post" <?php selected($request_method, 'wp_remote_post'); ?>>WP REMOTE POST</option>
+    </select>
+    <?php
+}
+
+// Render request delay field
+function fyfx_your_propfirm_plugin_request_delay_callback() {
+    $request_delay = get_option('fyfx_your_propfirm_plugin_request_delay');
+    ?>
+    <select name="fyfx_your_propfirm_plugin_request_delay">
+        <option value="0" <?php selected($request_delay, '0'); ?>>0</option>
+        <?php
+        for ($i = 1; $i <= 10; $i++) {
+            ?>
+            <option value="<?php echo $i; ?>" <?php selected($request_delay, (string)$i); ?>><?php echo $i; ?></option>
+            <?php
+        }
+        ?>
     </select>
     <?php
 }
@@ -756,7 +789,8 @@ function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $ap
             'timeout' => 30,
             'redirection' => 5,
             'headers' => $headers,            
-            'body' => json_encode($api_data)
+            'body' => json_encode($api_data),
+            'blocking' => false
         )
     );
 
