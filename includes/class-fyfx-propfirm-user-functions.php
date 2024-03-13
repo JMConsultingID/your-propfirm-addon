@@ -544,7 +544,8 @@ add_action('woocommerce_new_order', 'update_post_meta_on_order_creation');
 // Create user via API when successful payment is made
 function send_api_on_order_status_change($order_id, $old_status, $new_status, $order) {
     // Retrieve endpoint URL and API Key from plugin settings
-    $request_method = get_option('fyfx_your_propfirm_plugin_enable_response_header');    
+    $request_method = get_option('fyfx_your_propfirm_plugin_request_method');
+    $request_delay = get_option('fyfx_your_propfirm_plugin_request_delay');    
 
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
     if ($plugin_enabled !== 'enable') {
@@ -617,7 +618,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 } else {
-                    $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data);
+                    $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data, $request_delay);
                     $http_status = $response['http_status'];
                     $api_response = $response['api_response'];
                 }
@@ -638,7 +639,7 @@ function send_api_on_order_status_change($order_id, $old_status, $new_status, $o
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     } else {
-                        $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data_account);
+                        $response = ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url_2, $api_key, $api_data_account, $request_delay);
                         $http_status = $response['http_status'];
                         $api_response = $response['api_response'];
                     }
@@ -775,7 +776,7 @@ function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $ap
     );
 }
 
-function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data) {
+function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $api_key, $api_data, $request_delay=0) {
     $api_url = $endpoint_url;
     $headers = array(
         'Accept' => 'application/json',
@@ -786,7 +787,7 @@ function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $ap
     $response = wp_remote_post(
         $api_url,
         array(
-            'timeout' => 30,
+            'timeout' => 60,
             'redirection' => 5,
             'headers' => $headers,            
             'body' => json_encode($api_data),
@@ -796,6 +797,11 @@ function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $ap
 
     $http_status = wp_remote_retrieve_response_code($response);
     $api_response = wp_remote_retrieve_body($response);
+
+    // Menunda eksekusi jika $delay lebih besar dari 0
+    if ($request_delay > 0) {
+        usleep($request_delay * 1000000); // Delay dalam mikro detik
+    }
 
     return array(
         'http_status' => $http_status,
