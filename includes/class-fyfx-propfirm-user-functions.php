@@ -456,7 +456,7 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
 
     return $fields;
 }
-add_filter('woocommerce_checkout_fields', 'fyfx_your_propfirm_plugin_add_custom_field');
+add_action( 'woocommerce_after_checkout_billing_form', 'add_custom_checkout_field_after_billing' );
 
 function display_custom_field_after_shipping_form() {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
