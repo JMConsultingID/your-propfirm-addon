@@ -441,15 +441,14 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     if ($checkout_form === 'woocommerce_form' && $mt_version_field !== 'disable') {
         ?>
         <div class="custom-field ypf_mt_version_field_wrapper">
-            <?php
-        $fields['billing']['mt_version'] = array(
-            'type' => 'select',
-            'label' => 'MetaTrader Version',
-            'options' => $options, // Use the conditional options here
-            'required' => true,
-            'class' => array('form-row-wide ypf_mt_version_field'),
-            'clear' => true
-        );
+        <?php
+            woocommerce_form_field('mt_version', array(
+                'type' => 'select',
+                'class' => array('form-row-wide ypf_mt_version_field'),
+                'label' => __('MetaTrader Version', 'woocommerce'),
+                'required' => true,
+                'options' => $options // Use the conditional options here
+            ), '');
         ?>
         </div>
         <?php
