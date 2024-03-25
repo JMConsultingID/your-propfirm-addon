@@ -448,7 +448,7 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
                 'label' => __('MetaTrader Version', 'woocommerce'),
                 'required' => true,
                 'options' => $options // Use the conditional options here
-            ), '');
+            ), $checkout->get_value( 'mt_version' ));
         ?>
         </div>
         <?php
