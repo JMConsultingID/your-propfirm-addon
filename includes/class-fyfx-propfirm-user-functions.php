@@ -493,15 +493,26 @@ function display_custom_field_after_billing_form() {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
 
     // Determine the options order based on $default_mt
-    $options = $default_mt === 'MT5' ? array(
-        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+    if ($default_mt === 'CTrader') {
+    $options = array(
         'CTrader' => __('CTrader', 'woocommerce'),
-    ) : array(
         'MT4' => __('MetaTrader Version 4', 'woocommerce'),
         'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-        'CTrader' => __('CTrader', 'woocommerce'),
     );
+    } elseif ($default_mt === 'MT5') {
+        $options = array(
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'CTrader' => __('CTrader', 'woocommerce'),
+        );
+    } else { // Default to MT4 if not MT5 or CTrader
+        $options = array(
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+            'CTrader' => __('CTrader', 'woocommerce'),
+        );
+    }
+
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_billing' && $mt_version_field !== 'disable') {
         ?>
