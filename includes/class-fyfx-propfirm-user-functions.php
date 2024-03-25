@@ -447,8 +447,9 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
             'class' => array('form-row-wide ypf_mt_version_field'),
             'clear' => true
         );
+        ?>
+        </div>
         <?php
-
     }
 
     return $fields;
