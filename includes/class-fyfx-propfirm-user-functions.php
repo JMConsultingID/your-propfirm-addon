@@ -420,20 +420,17 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     if ($default_mt === 'CTrader') {
         $options = array(
             'CTrader' => __('CTrader', 'woocommerce'),
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
             'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         );
     } elseif ($default_mt === 'MT5') {
         $options = array(
             'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
             'CTrader' => __('CTrader', 'woocommerce'),
         );
     } else { // Default to MT4 if not MT5 or CTrader
         $options = array(
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
             'CTrader' => __('CTrader', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         );
     }
 
@@ -442,21 +439,21 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
         ?>
         <div class="custom-field ypf_mt_version_field_wrapper">
         <?php
-            woocommerce_form_field('mt_version', array(
-                'type' => 'select',
-                'class' => array('form-row-wide ypf_mt_version_field'),
-                'label' => __('MetaTrader Version', 'woocommerce'),
-                'required' => true,
-                'options' => $options // Use the conditional options here
-            ), $checkout->get_value( 'mt_version' ));
-        ?>
-        </div>
+        $fields['billing']['mt_version'] = array(
+            'type' => 'select',
+            'label' => 'MetaTrader Version',
+            'options' => $options, // Use the conditional options here
+            'required' => true,
+            'class' => array('form-row-wide ypf_mt_version_field'),
+            'clear' => true
+        );
         <?php
+
     }
 
     return $fields;
 }
-add_action( 'woocommerce_after_checkout_billing_form', 'fyfx_your_propfirm_plugin_add_custom_field' );
+add_filter('woocommerce_checkout_fields', 'fyfx_your_propfirm_plugin_add_custom_field');
 
 function display_custom_field_after_shipping_form() {
     $plugin_enabled = get_option('fyfx_your_propfirm_plugin_enabled');
@@ -473,20 +470,17 @@ function display_custom_field_after_shipping_form() {
     if ($default_mt === 'CTrader') {
         $options = array(
             'CTrader' => __('CTrader', 'woocommerce'),
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
             'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         );
     } elseif ($default_mt === 'MT5') {
         $options = array(
             'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
             'CTrader' => __('CTrader', 'woocommerce'),
         );
     } else { // Default to MT4 if not MT5 or CTrader
         $options = array(
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
             'CTrader' => __('CTrader', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         );
     }
 
@@ -520,22 +514,19 @@ function display_custom_field_after_billing_form() {
 
     // Determine the options order based on $default_mt
     if ($default_mt === 'CTrader') {
-    $options = array(
-        'CTrader' => __('CTrader', 'woocommerce'),
-        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-    );
+        $options = array(
+            'CTrader' => __('CTrader', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        );
     } elseif ($default_mt === 'MT5') {
         $options = array(
             'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
             'CTrader' => __('CTrader', 'woocommerce'),
         );
     } else { // Default to MT4 if not MT5 or CTrader
         $options = array(
-            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
             'CTrader' => __('CTrader', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
         );
     }
 
