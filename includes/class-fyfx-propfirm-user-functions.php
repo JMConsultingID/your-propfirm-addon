@@ -417,25 +417,42 @@ function fyfx_your_propfirm_plugin_add_custom_field($fields) {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
 
     // Determine the options order based on $default_mt
-    $options = $default_mt === 'MT5' ? array(
-        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'CTrader' => __('CTrader', 'woocommerce'),
-    ) : array(
-        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-        'CTrader' => __('CTrader', 'woocommerce'),
-    );
+    if ($default_mt === 'CTrader') {
+        $options = array(
+            'CTrader' => __('CTrader', 'woocommerce'),
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        );
+    } elseif ($default_mt === 'MT5') {
+        $options = array(
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'CTrader' => __('CTrader', 'woocommerce'),
+        );
+    } else { // Default to MT4 if not MT5 or CTrader
+        $options = array(
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+            'CTrader' => __('CTrader', 'woocommerce'),
+        );
+    }
+
 
     if ($checkout_form === 'woocommerce_form' && $mt_version_field !== 'disable') {
+        ?>
+        <div class="custom-field ypf_mt_version_field_wrapper">
+            <?php
         $fields['billing']['mt_version'] = array(
             'type' => 'select',
             'label' => 'MetaTrader Version',
             'options' => $options, // Use the conditional options here
             'required' => true,
-            'class' => array('form-row-wide'),
+            'class' => array('form-row-wide ypf_mt_version_field'),
             'clear' => true
         );
+        ?>
+        </div>
+        <?php
     }
 
     return $fields;
@@ -454,23 +471,33 @@ function display_custom_field_after_shipping_form() {
     $default_mt = get_option('fyfx_your_propfirm_plugin_default_mt_version_field');
 
     // Determine the options order based on $default_mt
-    $options = $default_mt === 'MT5' ? array(
-        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'CTrader' => __('CTrader', 'woocommerce'),
-    ) : array(
-        'MT4' => __('MetaTrader Version 4', 'woocommerce'),
-        'MT5' => __('MetaTrader Version 5', 'woocommerce'),
-        'CTrader' => __('CTrader', 'woocommerce'),
-    );
+    if ($default_mt === 'CTrader') {
+        $options = array(
+            'CTrader' => __('CTrader', 'woocommerce'),
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+        );
+    } elseif ($default_mt === 'MT5') {
+        $options = array(
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'CTrader' => __('CTrader', 'woocommerce'),
+        );
+    } else { // Default to MT4 if not MT5 or CTrader
+        $options = array(
+            'MT4' => __('MetaTrader Version 4', 'woocommerce'),
+            'MT5' => __('MetaTrader Version 5', 'woocommerce'),
+            'CTrader' => __('CTrader', 'woocommerce'),
+        );
+    }
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_shipping' && $mt_version_field !== 'disable') {
         ?>
-        <div class="custom-field">
+        <div class="custom-field ypf_mt_version_field_wrapper">
             <?php
             woocommerce_form_field('mt_version', array(
                 'type' => 'select',
-                'class' => array('form-row-wide'),
+                'class' => array('form-row-wide ypf_mt_version_field'),
                 'label' => __('MetaTrader Version', 'woocommerce'),
                 'required' => true,
                 'options' => $options // Use the conditional options here
@@ -516,11 +543,11 @@ function display_custom_field_after_billing_form() {
 
     if ($checkout_form !== 'woocommerce_form' && $sellkit_option === 'sellkit_billing' && $mt_version_field !== 'disable') {
         ?>
-        <div class="custom-field">
+        <div class="custom-field ypf_mt_version_field_wrapper">
             <?php
             woocommerce_form_field('mt_version', array(
                 'type' => 'select',
-                'class' => array('form-row-wide'),
+                'class' => array('form-row-wide ypf_mt_version_field'),
                 'label' => __('MetaTrader Version', 'woocommerce'),
                 'required' => true,
                 'options' => $options // Use the conditional options here
@@ -774,8 +801,8 @@ function ypf_your_propfirm_plugin_send_curl_request($endpoint_url, $api_key, $ap
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $response = curl_exec($ch);
-    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Mendapatkan kode stat
-    $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE); // Mendapatkan ukuran header
+    $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Get stat code
+    $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE); // Getting the header size
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_close($ch);
 
@@ -809,9 +836,9 @@ function ypf_your_propfirm_plugin_send_wp_remote_post_request($endpoint_url, $ap
     $http_status = wp_remote_retrieve_response_code($response);
     $api_response = wp_remote_retrieve_body($response);
 
-    // Menunda eksekusi jika $delay lebih besar dari 0
+    // Delay execution if $delay is greater than 0
     if ($request_delay > 0) {
-        usleep($request_delay * 1000000); // Delay dalam mikro detik
+        usleep($request_delay * 1000000); // Delay in micro seconds
     }
 
     return array(
